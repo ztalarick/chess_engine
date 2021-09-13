@@ -76,7 +76,7 @@ Board::Board(string fen){
   split(fen_parts, fen, " "); //first split the fen by spaces
   split(fen_board, fen_parts[0], "/"); //split by row
   Piece piece_type;
-  bitboard board = 9223372036854775808U; //this number is the bitboard representing 1 bit in the square A8
+  bitboard board = 9223372036854775808ULL; //this number is the bitboard representing 1 bit in the square A8
 
   for(const string &s : fen_board){ //build bitboards from fen_board
     for(auto &c : s){

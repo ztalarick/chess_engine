@@ -13,4 +13,8 @@ bool no_ally_piece (bitboard ally_pieces, bitboard move);
 //used for generating legal king moves
 bitboard gen_attacked_squares(Board pos, Side side, bool king);
 
+//functions to generate and add all legal moves to the moveList by piece
+void gen_king_moves(std::vector<Board> &moveList, const Board &pos, Piece p);
+void gen_knight_moves(std::vector<Board> &moveList, const Board &pos, Piece p);
+
 #endif
