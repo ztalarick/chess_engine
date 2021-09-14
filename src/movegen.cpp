@@ -12,6 +12,8 @@
     -Perft testing function
 */
 
+#include <iostream>
+
 #include "movegen.h"
 
 using namespace std;
@@ -22,13 +24,13 @@ using namespace std;
 //TODO generate only legal moves
 //TODO Check edges of board
 //TODO FIX MOVEGEN FOR MORE THAN TWO PIECES WITH PAWN PROMOTIONS
+//TODO should change this to pass by reference as well
 vector<Board> movegen(Board pos){
   //iterate every piece type that can move
   //use the fancy inline if statement to evaluate i to the correct indices
   vector<Board> moveList;
   for(int i = (pos.to_move ? 0 : 6); i < (pos.to_move ? 6 : 12); i = i + 1){
     Piece p = static_cast<Piece>(i);
-    // bitboard ally_board = pos.to_move ? pos.white_pieces : pos.black_pieces;
     if(p == wking || p == bking){
       gen_king_moves(moveList, pos, p);
     }
@@ -55,41 +57,49 @@ vector<Board> movegen(Board pos){
 //function to add the generated king moves to the moveList
 //moveList passed by reference
 //board passed by reference
+//TODO function to check position if king is in check
 void gen_king_moves(vector<Board> &moveList, const Board &pos, Piece p){
-      bitboard ally_board = pos.to_move ? pos.white_pieces : pos.black_pieces;
+      bitboard ally_board = pos.to_move ? pos.black_pieces : pos.white_pieces;
 
 
-      //TODO function to check position if king is in check
-      if(no_ally_piece(ally_board, pos.boards[p] >> 1))
+      if(no_ally_piece(ally_board, pos.boards[p] >> 1) &&
+      !(pos.boards[p] & 72340172838076673ULL)) //not in h file
         moveList.push_back(Board(pos, p, pos.boards[p] >> 1)); //move 1 east
 
-      if(no_ally_piece(ally_board, pos.boards[p] << 1))
+      if(no_ally_piece(ally_board, pos.boards[p] << 1) && 
+        !(pos.boards[p] & 9259542123273814144ULL)) //check that the king is not on the A file
         moveList.push_back(Board(pos, p, pos.boards[p] << 1)); //move 1 west
 
-      if(no_ally_piece(ally_board, pos.boards[p] << 8))
-        moveList.push_back(Board(pos, p, pos.boards[p] << 8)); //move 1 south
+      if(no_ally_piece(ally_board, pos.boards[p] >> 8) &&
+       !(pos.boards[p] & 255ULL)) //not on 1st rank
+        moveList.push_back(Board(pos, p, pos.boards[p] >> 8)); //move 1 south
 
-      if(no_ally_piece(ally_board, pos.boards[p] >> 8))
-        moveList.push_back(Board(pos, p, pos.boards[p] >> 8)); //move 1 north
+      if(no_ally_piece(ally_board, pos.boards[p] << 8) &&
+       !(pos.boards[p] & 18374686479671623680ULL)) //not on 8th rank
+        moveList.push_back(Board(pos, p, pos.boards[p] << 8)); //move 1 north
 
-      if(no_ally_piece(ally_board, pos.boards[p] >> 9))
-        moveList.push_back(Board(pos, p, pos.boards[p] >> 9)); //move 1 ne
+      if(no_ally_piece(ally_board, pos.boards[p] << 7) &&
+       !(pos.boards[p] & 18374969058471772417ULL)) //not in h file for 8th rank
+        moveList.push_back(Board(pos, p, pos.boards[p] << 7)); //move 1 ne
 
-      if(no_ally_piece(ally_board, pos.boards[p] >> 7))
-        moveList.push_back(Board(pos, p, pos.boards[p] >> 7)); //move 1 nw
+      if(no_ally_piece(ally_board, pos.boards[p] << 9) &&
+      !(pos.boards[p] & 18410856566090662016ULL)) //not in a file or 8th rank
+        moveList.push_back(Board(pos, p, pos.boards[p] << 9)); //move 1 nw
 
-      if(no_ally_piece(ally_board, pos.boards[p] << 9))
-        moveList.push_back(Board(pos, p, pos.boards[p] << 9)); //move 1 sw
+      if(no_ally_piece(ally_board, pos.boards[p] >> 7) &&
+      !(pos.boards[p] & 9259542123273814271ULL)) //not in a file or 1st rank
+        moveList.push_back(Board(pos, p, pos.boards[p] >> 7)); //move 1 sw
 
-      if(no_ally_piece(ally_board, pos.boards[p] << 7))
-        moveList.push_back(Board(pos, p, pos.boards[p] << 7)); //move 1 se
+      if(no_ally_piece(ally_board, pos.boards[p] >> 9) &&
+      !(pos.boards[p] & 72340172838076927ULL)) //not in h file or 1st rank
+        moveList.push_back(Board(pos, p, pos.boards[p] >> 9)); //move 1 se
 }
 
 //function to generate and add all legal knight moves to the moveList
 //moveList and board passed by reference
 void gen_knight_moves(vector<Board> &moveList, const Board &pos, Piece p){
     //calculate the ally pieces
-    bitboard ally_board = pos.to_move ? pos.white_pieces : pos.black_pieces;
+    bitboard ally_board = pos.to_move ? pos.black_pieces : pos.white_pieces;
 
     // the knights are two pieces stored on the same bitboard
     // here I seperate the two pieces and generate moves for them both
@@ -164,6 +174,11 @@ void gen_knight_moves(vector<Board> &moveList, const Board &pos, Piece p){
 }
 
 bool no_ally_piece (bitboard ally_pieces, bitboard move){
+
+  // cout << "Ally Pieces: " << ally_pieces << endl;
+  // cout << "Move: " << move << endl;
+  // cout << "AP & M: " << (ally_pieces & move) << endl << endl;
+
   return (ally_pieces & move) == 0;
 }
 
