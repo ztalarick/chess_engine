@@ -61,7 +61,6 @@ vector<Board> movegen(Board pos){
 void gen_king_moves(vector<Board> &moveList, const Board &pos, Piece p){
       bitboard ally_board = pos.to_move ? pos.black_pieces : pos.white_pieces;
 
-
       if(no_ally_piece(ally_board, pos.boards[p] >> 1) &&
       !(pos.boards[p] & 72340172838076673ULL)) //not in h file
         moveList.push_back(Board(pos, p, pos.boards[p] >> 1)); //move 1 east
@@ -101,74 +100,64 @@ void gen_knight_moves(vector<Board> &moveList, const Board &pos, Piece p){
     //calculate the ally pieces
     bitboard ally_board = pos.to_move ? pos.black_pieces : pos.white_pieces;
 
-    // the knights are two pieces stored on the same bitboard
+    // the knights are multiple pieces stored on the same bitboard
     // here I seperate the two pieces and generate moves for them both
-    bitboard two_knights = pos.boards[p];
-    //this array will hold the seperate bitboards for each knight
+    bitboard all_knights = pos.boards[p];
+    //this vector will hold the seperate bitboards for each knight
     //need to do it this way because we need the original square for the other knight
     // when adding the moves to the moveList
-    bitboard knights[2];
-    int it = 0;
-    while(two_knights){
-      knights[it] = two_knights & -two_knights;
-      it++;
-      two_knights &= two_knights - 1;
-    }
+    //size 10 because 2 starting knights and 8 possible pawn promotions
+    vector<bitboard> sep_knights(10);
+    separate_bits(sep_knights, all_knights);
+ 
     //now generate the moves for each knight
-    //knight 1
-    bitboard knight_moves[] = {6, 10, 15, 17}; //8 total knight moves, >>  and << for each
-    if(knights[0]){
-      for(int kn_it = 0; kn_it < 4; kn_it++){
+    /* 
+      Possible moves: 
+      >> 6  - bounds check for A and B file, 1st rank
+      << 6  - bounds check for G and H file, 8th rank
+      >> 10 - bounds check for G and H file, 1st rank
+      << 10 - bounds check for A and B file, 8th rank
+      >> 15 - bounds check for A file, 1st and 2nd rank
+      << 15 - bounds check for H file, 7th and 8th rank
+      >> 17 - bounds check for H file, 1st and 2nd rank
+      << 17 - bounds check for A file, 7th and 8th rank
+    */
+    for(int curr_kn = 0; curr_kn < 10; curr_kn++){
+      if(sep_knights.at(curr_kn)){ // if there is a knight at this index
 
-        //for the north side
-        if(no_ally_piece(ally_board, (knights[0] << knight_moves[kn_it]) & knights[1]) || //check for ally piece in that square
-          (knights[0] << knight_moves[kn_it]) != knights[1] || //make sure the other knight isnt in that square
-          !(knights[0] & 18374686479671623680ULL) || //bounds check in 8th rank
-          ((knight_moves[kn_it] == 15 || knight_moves[kn_it] == 17) && !(knights[0] & 71776119061217280ULL)) || // bounds check in the 7th rank
-          ((knight_moves[kn_it] == 15 || knight_moves[kn_it] == 6) && !(knights[0] & 72340172838076673ULL)) || // bounds check in H file
-          ((knight_moves[kn_it] == 6) && !(knights[0] & 144680345676153346ULL)) //bounds check in G file
-          ){
-            moveList.push_back(Board(pos, p, (knights[0] << knight_moves[kn_it]) & knights[1]));
-        }
+        bitboard curr_move = sep_knights.at(curr_kn) >> 6;
+        if(no_ally_piece(ally_board, curr_move) && !(sep_knights.at(curr_kn) & 13889313184910721279ULL))
+          moveList.push_back(Board(pos, p, combine_bits(sep_knights, curr_move, sep_knights.at(curr_kn))));
 
-        //for the south side
-        if(no_ally_piece(ally_board, (knights[0] >> knight_moves[kn_it]) & knights[1]) || //check for ally piece
-          ((knights[0] >> knight_moves[kn_it]) != knights[1]) || //make sure the other knight isnt in that square
-          !(knights[0] & 255ULL) || //bounds check rank 1
-          ((knight_moves[kn_it] == 15 || knight_moves[kn_it] == 17) && !(knights[0] & 65280ULL)) || //bounds check rank 2
-          ((knight_moves[kn_it] == 17 || knight_moves[kn_it] == 10) && !(knights[0] & 9259542123273814144ULL)) || //bounds check in A file
-          ((knight_moves[kn_it] == 6 || knight_moves[kn_it] == 10) && !(knights[0] & 4629771061636907072ULL))  //bounds check in B file
-          ){
-            moveList.push_back(Board(pos, p, (knights[0] >> knight_moves[kn_it]) & knights[1]));
-          }
+        curr_move = sep_knights.at(curr_kn) << 6;
+        if(no_ally_piece(ally_board, curr_move) && !(sep_knights.at(curr_kn) & 18375534216072069891ULL))
+          moveList.push_back(Board(pos, p, combine_bits(sep_knights, curr_move, sep_knights.at(curr_kn))));
 
-      }
-    }
-    //knight 2
-    if(knights[1]){
-      for(int kn_it = 0; kn_it < 4; kn_it++){
+        curr_move = sep_knights.at(curr_kn) >> 10;
+        if(no_ally_piece(ally_board, curr_move) && !(sep_knights.at(curr_kn) & 217020518514230271ULL))
+          moveList.push_back(Board(pos, p, combine_bits(sep_knights, curr_move, sep_knights.at(curr_kn))));
 
-        //for the north side
-        if(no_ally_piece(ally_board, (knights[1] << knight_moves[kn_it]) & knights[0]) || //check for ally piece in that square
-          (knights[1] << knight_moves[kn_it]) != knights[0] || //make sure the other knight isnt in that square
-          !(knights[1] & 18374686479671623680ULL) || //bounds check in 8th rank
-          ((knight_moves[kn_it] == 15 || knight_moves[kn_it] == 17) && !(knights[1] & 71776119061217280ULL)) || // bounds check in the 7th rank
-          ((knight_moves[kn_it] == 15 || knight_moves[kn_it] == 6) && !(knights[1] & 72340172838076673ULL)) || // bounds check in H file
-          ((knight_moves[kn_it] == 6) && !(knights[1] & 144680345676153346ULL)) //bounds check in G file
-          ){
-            moveList.push_back(Board(pos, p, (knights[1] << knight_moves[kn_it]) & knights[0]));
-        }
+        curr_move = sep_knights.at(curr_kn) << 10;
+        if(no_ally_piece(ally_board, curr_move) && !(sep_knights.at(curr_kn) & 18428941609300181184ULL))
+          moveList.push_back(Board(pos, p, combine_bits(sep_knights, curr_move, sep_knights.at(curr_kn))));
 
-        //for the south side
-        if(no_ally_piece(ally_board, (knights[1] >> knight_moves[kn_it]) & knights[0]) || //check for ally piece
-          ((knights[1] >> knight_moves[kn_it]) != knights[0]) || //make sure the other knight isnt in that square
-          !(knights[1] & 255ULL) || //bounds check rank 1
-          ((knight_moves[kn_it] == 15 || knight_moves[kn_it] == 17) && !(knights[1] & 65280ULL)) || //bounds check rank 2
-          ((knight_moves[kn_it] == 17 || knight_moves[kn_it] == 10) && !(knights[1] & 9259542123273814144ULL)) || //bounds check in A file
-          ((knight_moves[kn_it] == 6 || knight_moves[kn_it] == 10) && !(knights[1] & 4629771061636907072ULL))  //bounds check in B file
-          ){
-            moveList.push_back(Board(pos, p, (knights[1] >> knight_moves[kn_it]) & knights[0]));
-          }
+        curr_move = sep_knights.at(curr_kn) >> 15;
+        if(no_ally_piece(ally_board, curr_move) && !(sep_knights.at(curr_kn) & 9259542123273846783ULL))
+          moveList.push_back(Board(pos, p, combine_bits(sep_knights, curr_move, sep_knights.at(curr_kn))));
+
+        curr_move = sep_knights.at(curr_kn) << 15;
+        if(no_ally_piece(ally_board, curr_move) && !(sep_knights.at(curr_kn) & 18446463702556279041ULL))
+          moveList.push_back(Board(pos, p, combine_bits(sep_knights, curr_move, sep_knights.at(curr_kn))));
+
+        curr_move = sep_knights.at(curr_kn) >> 17;
+        if(no_ally_piece(ally_board, curr_move) && !(sep_knights.at(curr_kn) & 72340172838141951ULL))
+          moveList.push_back(Board(pos, p, combine_bits(sep_knights, curr_move, sep_knights.at(curr_kn))));
+
+        curr_move = sep_knights.at(curr_kn) << 17;
+        if(no_ally_piece(ally_board, curr_move) && !(sep_knights.at(curr_kn) & 18446603888132915328ULL))
+          moveList.push_back(Board(pos, p, combine_bits(sep_knights, curr_move, sep_knights.at(curr_kn))));
+      } else{
+        break; //if you reach an index with no knight you can stop the loop
       }
     }
 }
@@ -180,6 +169,34 @@ bool no_ally_piece (bitboard ally_pieces, bitboard move){
   // cout << "AP & M: " << (ally_pieces & move) << endl << endl;
 
   return (ally_pieces & move) == 0;
+}
+
+//This function seperates each bit into a seperate 
+void separate_bits(vector<bitboard> &bits, bitboard board){
+  int it = 0;
+  while (board){
+    cout << "Board: " << board << endl;
+    cout << "It: " << it << endl;
+    bits.at(it) = (board & -board);
+    it++;
+    board &= board - 1ULL;
+  }
+}
+
+//this function combines a vector of 1 bit bitboards into 1 to be stored
+// old_piece is the piece you do not want to be combined,
+bitboard combine_bits(vector<bitboard> &bits, bitboard move, bitboard old_piece){
+  int size = bits.size();
+  for(int i = 0; i < size; i++){
+    if(bits.at(i)){
+      if(bits.at(i) != old_piece){
+        move |= bits.at(i);
+      }
+    }else{
+      break; //can break if a 0 is reached
+    }
+  }
+  return move;
 }
 
 //TODO do this function, maybe by calling generate moves?
