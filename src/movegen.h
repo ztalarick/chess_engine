@@ -7,7 +7,8 @@
 // function to generate all legal moves from a given position
 // return - a vector of board states containg every legal branching board state
 // pos - the start position
-std::vector<Board> movegen(Board pos);
+// moveList - vector containing the moves, passed by reference
+std::vector<Board> movegen(std::vector<Board> &moveList, Board pos);
 
 //checks if an ally piece exists in the square you want to move too
 // ally_pieces - a bitboard with a bitset for all allied pieces
@@ -40,5 +41,6 @@ bitboard gen_attacked_squares(Board pos, Side side, bool king);
 //p - the piece you want to generate for
 void gen_king_moves(std::vector<Board> &moveList, const Board &pos, Piece p);
 void gen_knight_moves(std::vector<Board> &moveList, const Board &pos, Piece p);
+void gen_pawn_moves(std::vector<Board> &moveList, const Board &pos, Piece p);
 
 #endif

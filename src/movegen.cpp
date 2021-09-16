@@ -26,10 +26,9 @@ using namespace std;
 //TODO Check edges of board
 //TODO FIX MOVEGEN FOR MORE THAN TWO PIECES WITH PAWN PROMOTIONS
 //TODO should change this to pass by reference as well
-vector<Board> movegen(Board pos){
+vector<Board> movegen(vector<Board> &moveList, Board pos){
   //iterate every piece type that can move
   //use the fancy inline if statement to evaluate i to the correct indices
-  vector<Board> moveList;
   for(int i = (pos.to_move ? 0 : 6); i < (pos.to_move ? 6 : 12); i = i + 1){
     Piece p = static_cast<Piece>(i);
     if(p == wking || p == bking){
@@ -161,6 +160,71 @@ void gen_knight_moves(vector<Board> &moveList, const Board &pos, Piece p){
         break; //if you reach an index with no knight you can stop the loop
       }
     }
+}
+
+//generate all legal pawn moves and add to the moveList
+//possible moves:
+// White:
+//    << 8  - no pieces in front and no promotion
+//    << 8  - no pieces in front and promotion
+//    << 16 - only on 2nd rank
+//    << 9  - attacking and not in a file and no promotion
+//    << 9  - attacking and not in a file and promotion
+//    << 7  - attacking and not in h file and no promotion
+//    << 7  - attacking and not in h file and promotion
+// Black:
+//    >> 8  - no pieces in front and no promotion
+//    >> 8  - no pieces in front and promotion
+//    >> 16 - only on 2nd rank
+//    >> 9  - attacking and not in a file and no promotion
+//    >> 9  - attacking and not in a file and promotion
+//    >> 7  - attacking and not in h file and no promotion
+//    >> 7  - attacking and not in h file and promotion
+// TODO En passant
+void gen_pawn_moves(vector<Board> &moveList, const Board &pos, Piece p){
+      bitboard ally_board = pos.to_move ? pos.black_pieces : pos.white_pieces;
+      bitboard opp_board = pos.to_move ? pos.white_pieces : pos.black_pieces;
+      bitboard all_pawns = pos.boards[p]; //every pawn
+      vector<bitboard> sep_pawns(8);
+      separate_bits(sep_pawns, all_pawns); //seperate pawns
+      bitboard curr_move;
+
+      if(p == wpawn){ // white moves
+        for(int i = 0; i < 8; i++){ //iterate through seperated pawns
+          
+          curr_move = sep_pawns.at(i) << 8;
+          //if there is no piece allied or oponent, and it does not move to promotion square
+          if(no_ally_piece(ally_board, curr_move) && no_ally_piece(opp_board, curr_move)
+          && !(curr_move & 18374686479671623680ULL))
+            moveList.push_back(Board(pos, p, curr_move));
+          
+          //TODO promotion 
+          if(no_ally_piece(ally_board, curr_move) && no_ally_piece(opp_board, curr_move)
+          && !(curr_move & 18374686479671623680ULL))
+
+          curr_move = sep_pawns.at(i) << 16;
+          if((curr_move & 65280ULL) && no_ally_piece(ally_board, curr_move) 
+          && no_ally_piece(opp_board, curr_move))
+            moveList.push_back(Board(pos, p, curr_move));
+          
+          curr_move = sep_pawns.at(i) << 9;
+          if(no_ally_piece(ally_board, curr_move) && !(no_ally_piece(opp_board, curr_move)) 
+          && !(sep_pawns.at(i) & 9259542123273814144ULL)) 
+          //no piece allied or oponent, and it does not move to promotion square
+            moveList.push_back(Board(pos, p, curr_move));
+        
+          curr_move = sep_pawns.at(i) << 7;
+          if(no_ally_piece(ally_board, curr_move) && !(no_ally_piece(opp_board, curr_move)) 
+          && !(sep_pawns.at(i) & 9259542123273814144ULL)) 
+          //no piece allied or oponent, and it does not move to promotion square
+            moveList.push_back(Board(pos, p, curr_move));
+
+
+        }
+      }else { // black moves
+        //TODO
+      }
+      
 }
 
 bool no_ally_piece (bitboard ally_pieces, bitboard move){
