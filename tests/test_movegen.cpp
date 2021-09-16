@@ -24,7 +24,7 @@ void print_moveList(vector<Board> &moveList){
         cout << endl;
         num_moves++;
     }
-    cout << "Number of moves generated: " << num_moves << endl;
+    cout << "Number of moves generated: " << num_moves << endl << endl; 
 }
 
 void test_gen_king_moves(){
@@ -93,7 +93,7 @@ void test_gen_king_moves(){
 
 void test_gen_knight_moves(){
     vector<Board> moveList;
-    cout << "Test for gen_knight_moves" << endl;
+    cout << "Tests for gen_knight_moves" << endl;
 
     //knight on d4
     cout << "Test 1 - Knight on d4: " << endl;
@@ -103,6 +103,27 @@ void test_gen_knight_moves(){
 
     moveList.clear();
 
+    //knight on d4 and e4
+    cout << "Test 2 - Knight on d4 and e4: " << endl;
+    Board knight_d4_e4 = Board("8/8/8/8/3NN3/8/8/8 w - - 0 1");
+    gen_knight_moves(moveList, knight_d4_e4, wknight);
+    print_moveList(moveList);
+
+    moveList.clear();
+
+    //knight on d4, allied pawns on all target squares
+    cout << "Test 3 - Knight on d4, allied pawns on all target squares: " << endl;
+    Board knight_d4_allied_pawns = Board("8/8/2P1P3/1P3P2/3N4/1P3P2/2P1P3/8 w - - 0 1");
+    gen_knight_moves(moveList, knight_d4_allied_pawns, wknight);
+    print_moveList(moveList);
+
+    moveList.clear();
+
+    //knights in all 4 corners
+    cout << "Test 4 - Knight on all 4 corners: " << endl;
+    Board knight_4corners = Board("N6N/8/8/8/8/8/8/N6N w - - 0 1");
+    gen_knight_moves(moveList, knight_4corners, wknight);
+    print_moveList(moveList);
 }
 
 int main(){

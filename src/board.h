@@ -1,7 +1,6 @@
 #ifndef _BOARD_H
 #define _BOARD_H
 
-
 typedef unsigned long long bitboard;
 const bitboard universe = 0xffffffffffffffffULL;
 
@@ -11,8 +10,6 @@ enum Piece {wking, wqueen, wknight, wbishop, wrook, wpawn,
 enum Side {white, black};
 
 #include <string>
-
-
 
 class Board{
   public:
@@ -24,9 +21,20 @@ class Board{
     bitboard white_pieces;
     bitboard black_pieces;
 
+    //contructors
+    //construct a board from a previous board then move
+    // src - previous board, passed by reference
+    // p - piece that was moved
+    // move - the bitboard updated with the move
     Board(const Board &src, Piece p, bitboard move);
+
+    //construct a board from a fen string
+    //fen - fen string to construct the board
     Board(std::string fen);
 
+    //update a board state to reflect the given move
+    //p - piece to be moved
+    //move - the new bitboard with the updated move
     void make_move(Piece p, bitboard move);
 
     friend void test();

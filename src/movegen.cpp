@@ -18,6 +18,7 @@
 
 using namespace std;
 
+
 //for now generate psudeolegal moves
 //TODO consider making a new class/struct Move containing only the information
 //necessary to make the move and not the entire board state
@@ -163,11 +164,6 @@ void gen_knight_moves(vector<Board> &moveList, const Board &pos, Piece p){
 }
 
 bool no_ally_piece (bitboard ally_pieces, bitboard move){
-
-  // cout << "Ally Pieces: " << ally_pieces << endl;
-  // cout << "Move: " << move << endl;
-  // cout << "AP & M: " << (ally_pieces & move) << endl << endl;
-
   return (ally_pieces & move) == 0;
 }
 
@@ -175,8 +171,6 @@ bool no_ally_piece (bitboard ally_pieces, bitboard move){
 void separate_bits(vector<bitboard> &bits, bitboard board){
   int it = 0;
   while (board){
-    cout << "Board: " << board << endl;
-    cout << "It: " << it << endl;
     bits.at(it) = (board & -board);
     it++;
     board &= board - 1ULL;

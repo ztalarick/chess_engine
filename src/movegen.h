@@ -3,11 +3,16 @@
 
 #include <vector>
 #include "board.h"
+
+// function to generate all legal moves from a given position
+// return - a vector of board states containg every legal branching board state
+// pos - the start position
 std::vector<Board> movegen(Board pos);
 
 //checks if an ally piece exists in the square you want to move too
 // ally_pieces - a bitboard with a bitset for all allied pieces
 // move - a bitboard with the square set that you want ot move to
+// return - true if no allied piece on that square, false otherwise
 bool no_ally_piece (bitboard ally_pieces, bitboard move);
 
 //seperates a bitboard with multiple pieces into an array
