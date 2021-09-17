@@ -108,7 +108,21 @@ void Board::make_move(Piece p, bitboard move){
   boards[p] = move;
   to_move = to_move ? white : black;
 
-  //update white/black piece variables
+  //update white/black piece variables - this might be kinda slow perhaps theres a faster way
+  for(int i = 0; i < 12; i++){
+    if(i < 6){//white bitboard
+      white_pieces = boards[i] | white_pieces;
+    }else { //black bitboard
+      black_pieces = boards[i] | black_pieces;
+    }
+  }
+}
+
+void Board::promote(Piece pawn, Piece promotion, bitboard square){
+  boards[promotion] = square & boards[promotion]; //add the promoted piece to the appropriate square
+  boards[pawn] = !(square & boards[pawn]);         //get rid of the old pawn
+  
+  //update the white/black piece variables
   for(int i = 0; i < 12; i++){
     if(i < 6){//white bitboard
       white_pieces = boards[i] | white_pieces;

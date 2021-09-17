@@ -48,7 +48,7 @@ vector<Board> movegen(vector<Board> &moveList, Board pos){
 
     }
     if(p == wpawn || p == bpawn){
-
+      gen_pawn_moves(moveList, pos, p);
     }
   }
   return moveList;
@@ -189,40 +189,98 @@ void gen_pawn_moves(vector<Board> &moveList, const Board &pos, Piece p){
       separate_bits(sep_pawns, all_pawns); //seperate pawns
       bitboard curr_move;
 
+
       if(p == wpawn){ // white moves
         for(int i = 0; i < 8; i++){ //iterate through seperated pawns
-          
+          if(!sep_pawns.at(i))
+            break;
           curr_move = sep_pawns.at(i) << 8;
-          //if there is no piece allied or oponent, and it does not move to promotion square
-          if(no_ally_piece(ally_board, curr_move) && no_ally_piece(opp_board, curr_move)
-          && !(curr_move & 18374686479671623680ULL))
-            moveList.push_back(Board(pos, p, curr_move));
-          
-          //TODO promotion 
-          if(no_ally_piece(ally_board, curr_move) && no_ally_piece(opp_board, curr_move)
-          && !(curr_move & 18374686479671623680ULL))
+          //if there is no piece allied or oponent
+          if(no_ally_piece(ally_board, curr_move) && no_ally_piece(opp_board, curr_move)){
+            bitboard new_pawns = combine_bits(sep_pawns, curr_move, sep_pawns.at(i));
+            
+            if(curr_move & 18374686479671623680ULL){ //promotion
+              Board new_board = Board(pos, p, new_pawns);
+              new_board.promote(p, wqueen, curr_move);
+              moveList.push_back(new_board);
 
+              new_board = Board(pos, p, new_pawns);
+              new_board.promote(p, wrook, curr_move);
+              moveList.push_back(new_board);
+
+              new_board = Board(pos, p, new_pawns);
+              new_board.promote(p, wknight, curr_move);
+              moveList.push_back(new_board);
+
+              new_board = Board(pos, p, new_pawns);
+              new_board.promote(p, wbishop, curr_move);
+              moveList.push_back(new_board);
+            }else { //no promotion
+              moveList.push_back(Board(pos, p, new_pawns));
+            }
+          }
+            
           curr_move = sep_pawns.at(i) << 16;
-          if((curr_move & 65280ULL) && no_ally_piece(ally_board, curr_move) 
+          if((sep_pawns.at(i) & 65280ULL) && no_ally_piece(ally_board, curr_move) 
           && no_ally_piece(opp_board, curr_move))
-            moveList.push_back(Board(pos, p, curr_move));
+            moveList.push_back(Board(pos, p, combine_bits(sep_pawns, curr_move, sep_pawns.at(i))));
           
           curr_move = sep_pawns.at(i) << 9;
           if(no_ally_piece(ally_board, curr_move) && !(no_ally_piece(opp_board, curr_move)) 
-          && !(sep_pawns.at(i) & 9259542123273814144ULL)) 
-          //no piece allied or oponent, and it does not move to promotion square
-            moveList.push_back(Board(pos, p, curr_move));
-        
+          && !(sep_pawns.at(i) & 9259542123273814144ULL)){
+            bitboard new_pawns = combine_bits(sep_pawns, curr_move, sep_pawns.at(i));
+
+            if(curr_move & 18374686479671623680ULL){ //promotion
+              Board new_board = Board(pos, p, new_pawns);
+              new_board.promote(p, wqueen, curr_move);
+              moveList.push_back(new_board);
+
+              new_board = Board(pos, p, new_pawns);
+              new_board.promote(p, wrook, curr_move);
+              moveList.push_back(new_board);
+
+              new_board = Board(pos, p, new_pawns);
+              new_board.promote(p, wknight, curr_move);
+              moveList.push_back(new_board);
+
+              new_board = Board(pos, p, new_pawns);
+              new_board.promote(p, wbishop, curr_move);
+              moveList.push_back(new_board);
+            }else { //no promotion
+              moveList.push_back(Board(pos, p, new_pawns));
+
+            }
+          } 
+          //no piece allied or oponent, and it does not move to promotion square        
           curr_move = sep_pawns.at(i) << 7;
           if(no_ally_piece(ally_board, curr_move) && !(no_ally_piece(opp_board, curr_move)) 
-          && !(sep_pawns.at(i) & 9259542123273814144ULL)) 
-          //no piece allied or oponent, and it does not move to promotion square
-            moveList.push_back(Board(pos, p, curr_move));
+          && !(sep_pawns.at(i) & 72340172838076673ULL)){
+            bitboard new_pawns = combine_bits(sep_pawns, curr_move, sep_pawns.at(i));
 
+            if(curr_move & 18374686479671623680ULL){ //promotion
+              Board new_board = Board(pos, p, new_pawns);
+              new_board.promote(p, wqueen, curr_move);
+              moveList.push_back(new_board);
 
+              new_board = Board(pos, p, new_pawns);
+              new_board.promote(p, wrook, curr_move);
+              moveList.push_back(new_board);
+
+              new_board = Board(pos, p, new_pawns);
+              new_board.promote(p, wknight, curr_move);
+              moveList.push_back(new_board);
+
+              new_board = Board(pos, p, new_pawns);
+              new_board.promote(p, wbishop, curr_move);
+              moveList.push_back(new_board);
+            }else { //no promotion
+              moveList.push_back(Board(pos, p, new_pawns));
+
+            }
+          } 
         }
       }else { // black moves
-        //TODO
+        
       }
       
 }

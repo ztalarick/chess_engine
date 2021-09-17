@@ -126,8 +126,22 @@ void test_gen_knight_moves(){
     print_moveList(moveList);
 }
 
+void test_gen_pawn_moves(){
+    vector<Board> moveList;
+    cout << "Tests for gen_pawn_moves" << endl;
+
+    //pawn on e2 and d4
+    cout << "Test 1 - Pawn on e2 and d4: " << endl;
+    Board pawn_e2_d4 = Board("8/8/8/8/3P4/8/4P3/8 w - - 0 1");
+    gen_pawn_moves(moveList, pawn_e2_d4, wpawn);   
+    print_moveList(moveList);
+
+    moveList.clear();
+}
+
 int main(){
     //test_gen_king_moves();
-    test_gen_knight_moves();
+    //test_gen_knight_moves();
+    test_gen_pawn_moves();
 
 }

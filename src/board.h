@@ -37,6 +37,12 @@ class Board{
     //move - the new bitboard with the updated move
     void make_move(Piece p, bitboard move);
 
+    //promote a pawn on the eigth rank to the given piece
+    //pawn - the pawn type to be promoted
+    //promotion - the type of new piece
+    //square - the square the promotion occurs
+    void promote(Piece pawn, Piece promotion, bitboard square);
+
     friend void test();
     void printBoard();
 };
