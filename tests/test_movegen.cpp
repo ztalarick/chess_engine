@@ -124,6 +124,15 @@ void test_gen_knight_moves(){
     Board knight_4corners = Board("N6N/8/8/8/8/8/8/N6N w - - 0 1");
     gen_knight_moves(moveList, knight_4corners, wknight);
     print_moveList(moveList);
+
+    moveList.clear();
+
+    cout << "Test 5 - Knight on d4, blocked by allied pawns except for capture" << endl;
+    Board knight_d4_capture = Board("8/8/2P1P3/1P3p2/3N4/1P3P2/2P1P3/8 w - - 0 1");
+    gen_knight_moves(moveList, knight_d4_capture, wknight);
+    print_moveList(moveList);
+
+    moveList.clear();
 }
 
 void test_gen_pawn_moves(){
@@ -137,6 +146,42 @@ void test_gen_pawn_moves(){
     print_moveList(moveList);
 
     moveList.clear();
+
+    cout << "Test 2 - Pawn on d7" << endl;
+    Board pawn_d7 = Board("8/3P4/8/8/8/8/8/8 w - - 0 1");
+    gen_pawn_moves(moveList, pawn_d7, wpawn); 
+    print_moveList(moveList);  
+
+    moveList.clear();
+
+    cout << "Test 3 - Pawn on blocked on d4" << endl;
+    Board pawn_blocked_d4 = Board("8/8/8/3k4/3P4/8/8/8 w - - 0 1");
+    gen_pawn_moves(moveList, pawn_blocked_d4, wpawn); 
+    print_moveList(moveList);  
+
+    moveList.clear();
+
+    cout << "Test 4 - Pawn on d4 with captures" << endl;
+    Board pawn_captures_d4 = Board("8/8/8/2rrr3/3P4/8/8/8 w - - 0 1");
+    gen_pawn_moves(moveList, pawn_captures_d4, wpawn); 
+    print_moveList(moveList); 
+
+    moveList.clear();
+
+    cout << "Test 5 - Multiple pawns with promotion" << endl;
+    Board pawn_promotion = Board("8/3P4/8/8/8/4PPP1/8/8 w - - 0 1");
+    gen_pawn_moves(moveList, pawn_promotion, wpawn); 
+    print_moveList(moveList); 
+
+    moveList.clear();
+
+    cout << "Test 6 - Pawns with capture promotion" << endl;
+    Board pawn_capture_promotion = Board("2rrr3/3P4/8/8/8/8/8/8 w - - 0 1");
+    gen_pawn_moves(moveList, pawn_capture_promotion, wpawn); 
+    print_moveList(moveList); 
+
+    moveList.clear();
+
 }
 
 int main(){

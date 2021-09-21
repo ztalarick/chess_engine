@@ -57,8 +57,8 @@ void split(string* arr, string s, string delimeter){
 Board::Board(const Board &src, Piece p, bitboard move){
   std::copy(src.boards, src.boards + 12, boards);
   to_move = src.to_move;
-  white_pieces = 0;
-  black_pieces = 0;
+  white_pieces = src.white_pieces;
+  black_pieces = src.black_pieces;
   this->make_move(p, move);
 }
 
@@ -106,9 +106,21 @@ Board::Board(string fen){
 
 void Board::make_move(Piece p, bitboard move){
   boards[p] = move;
+
+  if((to_move == white) && (black_pieces & move)){ //there is a piece to be captured
+    for(int i = 6; i < 12; i++){ //iterate through all enemy pieces
+      boards[i] = boards[i] & move ? (boards[i] ^ move) : boards[i]; //remove the bits that are set on the move square
+    }
+  } else if((to_move == black) && (white_pieces & move)){ //same for black side
+   for(int i = 0; i < 6; i++){ //iterate through all enemy pieces
+       boards[i] = boards[i] & move ? (boards[i] ^ move) : boards[i]; //remove the bits that are set on the move square
+    }
+  }
   to_move = to_move ? white : black;
 
   //update white/black piece variables - this might be kinda slow perhaps theres a faster way
+  white_pieces = 0;
+  black_pieces = 0;
   for(int i = 0; i < 12; i++){
     if(i < 6){//white bitboard
       white_pieces = boards[i] | white_pieces;
@@ -119,8 +131,8 @@ void Board::make_move(Piece p, bitboard move){
 }
 
 void Board::promote(Piece pawn, Piece promotion, bitboard square){
-  boards[promotion] = square & boards[promotion]; //add the promoted piece to the appropriate square
-  boards[pawn] = !(square & boards[pawn]);         //get rid of the old pawn
+  boards[promotion] = square | boards[promotion]; //add the promoted piece to the appropriate square
+  boards[pawn] = square ^ boards[pawn];         //get rid of the old pawn
   
   //update the white/black piece variables
   for(int i = 0; i < 12; i++){
