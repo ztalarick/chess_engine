@@ -29,7 +29,6 @@
 */
 
 #include <iostream>
-#include <unordered_map>
 #include <ctype.h>
 #include <algorithm>
 
@@ -59,6 +58,14 @@ Board::Board(const Board &src, Piece p, bitboard move){
   to_move = src.to_move;
   white_pieces = src.white_pieces;
   black_pieces = src.black_pieces;
+  wk_castle = src.wk_castle;
+  wq_castle = src.wq_castle;
+  bk_castle = src.bk_castle;
+  bq_castle = src.bq_castle;
+  en_passant = src.en_passant;
+  half_clock = src.half_clock;
+  full_count = src.full_count;
+
   this->make_move(p, move);
 }
 
@@ -92,6 +99,38 @@ Board::Board(string fen){
 
   to_move = (fen_parts[1].compare("w") == 0) ? white : black; //white or black to move
 
+  //castling ability
+  wk_castle = false;
+  wq_castle = false;
+  bk_castle = false;
+  bq_castle = false;
+  
+  for(auto &ch : fen_parts[2]){
+    if(ch == 'K'){
+      wk_castle = true;
+    }else if(ch == 'Q'){
+      wq_castle = true;
+    } else if(ch == 'k'){
+      bk_castle = true;
+    } else if(ch == 'q'){
+      bq_castle = true;
+    }
+  }
+
+  //En passant
+  if(fen_parts[3].compare("-") != 0){
+    unordered_map<string, bitboard> en_passant_map = { {"a3", 8388608ULL}, {"b3", 4194304ULL}, 
+    {"c3", 2097152ULL}, {"d3", 1048576ULL}, {"e3", 524288ULL}, {"f3", 262144ULL}, {"g3", 131072ULL}, {"h3", 65536ULL},
+    {"a6", 140737488355328ULL}, {"b6", 70368744177664ULL}, {"c6", 35184372088832ULL}, {"d6", 17592186044416ULL}, {"e6", 8796093022208ULL}, {"f6", 4398046511104ULL}, {"g6", 2199023255552ULL}, {"h6", 1099511627776ULL} };
+
+    en_passant = en_passant_map[fen_parts[2]];
+  }else{
+    en_passant = 0;
+  }
+
+  half_clock = stoi(fen_parts[4]);
+  full_count = stoi(fen_parts[5]);
+
   //generate white_pieces and black_pieces
   white_pieces = 0;
   black_pieces = 0;
@@ -108,15 +147,26 @@ void Board::make_move(Piece p, bitboard move){
   boards[p] = move;
 
   if((to_move == white) && (black_pieces & move)){ //there is a piece to be captured
+    half_clock = 0; //reset half clock
     for(int i = 6; i < 12; i++){ //iterate through all enemy pieces
       boards[i] = boards[i] & move ? (boards[i] ^ move) : boards[i]; //remove the bits that are set on the move square
     }
   } else if((to_move == black) && (white_pieces & move)){ //same for black side
+    half_clock = 0; //reset half clock
    for(int i = 0; i < 6; i++){ //iterate through all enemy pieces
        boards[i] = boards[i] & move ? (boards[i] ^ move) : boards[i]; //remove the bits that are set on the move square
     }
+  } else if(p == wpawn || p == bpawn){ //reset half clock if pawn move
+    half_clock = 0;
+    }else{
+      half_clock++;
+    }
+
+  if(to_move == black){ //increment fullmove counter when black moves
+    full_count++;
   }
-  to_move = to_move ? white : black;
+  to_move = to_move ? white : black; //switch side to_move
+
 
   //update white/black piece variables - this might be kinda slow perhaps theres a faster way
   white_pieces = 0;
@@ -154,6 +204,12 @@ void Board::printBoard(){
 
   cout << "White Pieces: " << white_pieces << endl;
   cout << "Black Pieces: " << black_pieces << endl;
+
+  cout << "Castling Ability: " << "WK - " << wk_castle 
+  << " WQ - " << wq_castle << " BK - " << bk_castle << " BQ - " << bq_castle << endl;
+  cout << "En Passant: " << en_passant << endl;
+  cout << "Halfmove Clock: " << half_clock << endl;
+  cout << "Fullmove Counter: " << full_count << endl;
 
   cout << " __________________" << endl;
 }
