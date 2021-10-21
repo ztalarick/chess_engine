@@ -180,7 +180,6 @@ void gen_knight_moves(vector<Board> &moveList, const Board &pos, Piece p){
 //    >> 9  - attacking and not in a file and promotion
 //    >> 7  - attacking and not in h file and no promotion
 //    >> 7  - attacking and not in h file and promotion
-// TODO En passant
 void gen_pawn_moves(vector<Board> &moveList, const Board &pos, Piece p){
       bitboard ally_board = pos.to_move ? pos.black_pieces : pos.white_pieces;
       bitboard opp_board = pos.to_move ? pos.white_pieces : pos.black_pieces;
@@ -189,12 +188,11 @@ void gen_pawn_moves(vector<Board> &moveList, const Board &pos, Piece p){
       separate_bits(sep_pawns, all_pawns); //seperate pawns
       bitboard curr_move;
 
-
       if(p == wpawn){ // white moves
         for(int i = 0; i < 8; i++){ //iterate through seperated pawns
           if(!sep_pawns.at(i))
             break;
-          curr_move = sep_pawns.at(i) << 8;
+          curr_move = sep_pawns.at(i) << 8; //single foward push
           //if there is no piece allied or oponent
           if(no_ally_piece(ally_board, curr_move) && no_ally_piece(opp_board, curr_move)){
             bitboard new_pawns = combine_bits(sep_pawns, curr_move, sep_pawns.at(i));
@@ -220,14 +218,20 @@ void gen_pawn_moves(vector<Board> &moveList, const Board &pos, Piece p){
             }
           }
             
-          curr_move = sep_pawns.at(i) << 16;
-          if((sep_pawns.at(i) & 65280ULL) && no_ally_piece(ally_board, curr_move) 
-          && no_ally_piece(opp_board, curr_move))
-            moveList.push_back(Board(pos, p, combine_bits(sep_pawns, curr_move, sep_pawns.at(i))));
+          curr_move = sep_pawns.at(i) << 16; //double move
+          if((sep_pawns.at(i) & 65280ULL) && no_ally_piece(ally_board, curr_move) //check on 2nd rank
+          && no_ally_piece(opp_board, curr_move)){
+            Board new_board = Board(pos, p, combine_bits(sep_pawns, curr_move, sep_pawns.at(i)));
+            new_board.set_en_passant(curr_move >> 8); //set enpassant
+            moveList.push_back(new_board);
+          }
+
           
-          curr_move = sep_pawns.at(i) << 9;
-          if(no_ally_piece(ally_board, curr_move) && !(no_ally_piece(opp_board, curr_move)) 
-          && !(sep_pawns.at(i) & 9259542123273814144ULL)){
+          curr_move = sep_pawns.at(i) << 9; //left capture
+          if(no_ally_piece(ally_board, curr_move) //there is no allied piece on the targeted square 
+          && (!(no_ally_piece(opp_board, curr_move))) //there is an opponent piece on the targeted square
+          || !(no_ally_piece(pos.en_passant, curr_move)) //there is an en passant available
+          && !(sep_pawns.at(i) & 9259542123273814144ULL)){ //not on the A file
             bitboard new_pawns = combine_bits(sep_pawns, curr_move, sep_pawns.at(i));
 
             if(curr_move & 18374686479671623680ULL){ //promotion
@@ -252,9 +256,11 @@ void gen_pawn_moves(vector<Board> &moveList, const Board &pos, Piece p){
             }
           } 
           //no piece allied or oponent, and it does not move to promotion square        
-          curr_move = sep_pawns.at(i) << 7;
-          if(no_ally_piece(ally_board, curr_move) && !(no_ally_piece(opp_board, curr_move)) 
-          && !(sep_pawns.at(i) & 72340172838076673ULL)){
+          curr_move = sep_pawns.at(i) << 7; //right capture
+          if(no_ally_piece(ally_board, curr_move)  
+          && (!(no_ally_piece(opp_board, curr_move)))
+          || (!(no_ally_piece(pos.en_passant, curr_move))) 
+          && !(sep_pawns.at(i) & 72340172838076673ULL)){ //not on the H file
             bitboard new_pawns = combine_bits(sep_pawns, curr_move, sep_pawns.at(i));
 
             if(curr_move & 18374686479671623680ULL){ //promotion
@@ -280,9 +286,105 @@ void gen_pawn_moves(vector<Board> &moveList, const Board &pos, Piece p){
           } 
         }
       }else { // black moves
-        
+        for(int i = 0; i < 8; i++){ //iterate through seperated pawns
+          if(!sep_pawns.at(i))
+            break;
+          curr_move = sep_pawns.at(i) >> 8; //single foward push
+          //if there is no piece allied or oponent
+          if(no_ally_piece(ally_board, curr_move) && no_ally_piece(opp_board, curr_move)){
+            bitboard new_pawns = combine_bits(sep_pawns, curr_move, sep_pawns.at(i));
+            
+            if(curr_move & 255ULL){ //promotion
+              Board new_board = Board(pos, p, new_pawns);
+              new_board.promote(p, bqueen, curr_move);
+              moveList.push_back(new_board);
+
+              new_board = Board(pos, p, new_pawns);
+              new_board.promote(p, brook, curr_move);
+              moveList.push_back(new_board);
+
+              new_board = Board(pos, p, new_pawns);
+              new_board.promote(p, bknight, curr_move);
+              moveList.push_back(new_board);
+
+              new_board = Board(pos, p, new_pawns);
+              new_board.promote(p, bbishop, curr_move);
+              moveList.push_back(new_board);
+            }else { //no promotion
+              moveList.push_back(Board(pos, p, new_pawns));
+            }
+          }
+            
+          curr_move = sep_pawns.at(i) >> 16; //double move
+          if((sep_pawns.at(i) & 71776119061217280ULL) && no_ally_piece(ally_board, curr_move) //check on 2nd rank
+          && no_ally_piece(opp_board, curr_move)){
+            Board new_board = Board(pos, p, combine_bits(sep_pawns, curr_move, sep_pawns.at(i)));
+            new_board.set_en_passant(curr_move << 8); //set enpassant
+            moveList.push_back(new_board);
+          }
+
+          
+          curr_move = sep_pawns.at(i) >> 9; //left capture
+          if(no_ally_piece(ally_board, curr_move) //there is no allied piece on the targeted square 
+          && (!(no_ally_piece(opp_board, curr_move))) //there is an opponent piece on the targeted square
+          || !(no_ally_piece(pos.en_passant, curr_move)) //there is an en passant available
+          && !(sep_pawns.at(i) & 72340172838076673ULL)){ //not on the H file
+            bitboard new_pawns = combine_bits(sep_pawns, curr_move, sep_pawns.at(i));
+
+            if(curr_move & 255ULL){ //promotion
+              Board new_board = Board(pos, p, new_pawns);
+              new_board.promote(p, bqueen, curr_move);
+              moveList.push_back(new_board);
+
+              new_board = Board(pos, p, new_pawns);
+              new_board.promote(p, brook, curr_move);
+              moveList.push_back(new_board);
+
+              new_board = Board(pos, p, new_pawns);
+              new_board.promote(p, bknight, curr_move);
+              moveList.push_back(new_board);
+
+              new_board = Board(pos, p, new_pawns);
+              new_board.promote(p, bbishop, curr_move);
+              moveList.push_back(new_board);
+            }else { //no promotion
+              moveList.push_back(Board(pos, p, new_pawns));
+
+            }
+          } 
+          
+          
+          //no piece allied or oponent, and it does not move to promotion square        
+          curr_move = sep_pawns.at(i) >> 7; //right capture
+          if(no_ally_piece(ally_board, curr_move)  
+          && (!(no_ally_piece(opp_board, curr_move)))
+          || (!(no_ally_piece(pos.en_passant, curr_move))) 
+          && !(sep_pawns.at(i) & 9259542123273814144ULL)){ //not on the A file
+            bitboard new_pawns = combine_bits(sep_pawns, curr_move, sep_pawns.at(i));
+
+            if(curr_move & 255ULL){ //promotion
+              Board new_board = Board(pos, p, new_pawns);
+              new_board.promote(p, bqueen, curr_move);
+              moveList.push_back(new_board);
+
+              new_board = Board(pos, p, new_pawns);
+              new_board.promote(p, brook, curr_move);
+              moveList.push_back(new_board);
+
+              new_board = Board(pos, p, new_pawns);
+              new_board.promote(p, bknight, curr_move);
+              moveList.push_back(new_board);
+
+              new_board = Board(pos, p, new_pawns);
+              new_board.promote(p, bbishop, curr_move);
+              moveList.push_back(new_board);
+            }else { //no promotion
+              moveList.push_back(Board(pos, p, new_pawns));
+
+            }
+          }       
       }
-      
+    }
 }
 
 bool no_ally_piece (bitboard ally_pieces, bitboard move){

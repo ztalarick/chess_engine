@@ -97,6 +97,7 @@ Board::Board(string fen){
     }
   }
 
+
   to_move = (fen_parts[1].compare("w") == 0) ? white : black; //white or black to move
 
   //castling ability
@@ -123,7 +124,7 @@ Board::Board(string fen){
     {"c3", 2097152ULL}, {"d3", 1048576ULL}, {"e3", 524288ULL}, {"f3", 262144ULL}, {"g3", 131072ULL}, {"h3", 65536ULL},
     {"a6", 140737488355328ULL}, {"b6", 70368744177664ULL}, {"c6", 35184372088832ULL}, {"d6", 17592186044416ULL}, {"e6", 8796093022208ULL}, {"f6", 4398046511104ULL}, {"g6", 2199023255552ULL}, {"h6", 1099511627776ULL} };
 
-    en_passant = en_passant_map[fen_parts[2]];
+    en_passant = en_passant_map[fen_parts[3]];
   }else{
     en_passant = 0;
   }
@@ -146,17 +147,26 @@ Board::Board(string fen){
 void Board::make_move(Piece p, bitboard move){
   boards[p] = move;
 
-  if((to_move == white) && (black_pieces & move)){ //there is a piece to be captured
+  if(((to_move == white) && (black_pieces & move))){ // capture
     half_clock = 0; //reset half clock
     for(int i = 6; i < 12; i++){ //iterate through all enemy pieces
       boards[i] = boards[i] & move ? (boards[i] ^ move) : boards[i]; //remove the bits that are set on the move square
     }
   } else if((to_move == black) && (white_pieces & move)){ //same for black side
     half_clock = 0; //reset half clock
-   for(int i = 0; i < 6; i++){ //iterate through all enemy pieces
+    for(int i = 0; i < 6; i++){ //iterate through all enemy pieces
        boards[i] = boards[i] & move ? (boards[i] ^ move) : boards[i]; //remove the bits that are set on the move square
     }
-  } else if(p == wpawn || p == bpawn){ //reset half clock if pawn move
+  } else if((to_move == white) && (move & en_passant)){//en passant and white move
+    half_clock = 0; //reset half clock
+    bitboard pawn_to_remove = en_passant >> 8;
+    boards[bpawn] = boards[bpawn] ^ pawn_to_remove; //exclusive or
+  }else if((to_move == black) && (move & en_passant)){ // en passant and black move
+    half_clock = 0; //reset half clock
+    bitboard pawn_to_remove = en_passant << 8;
+    boards[wpawn] = boards[wpawn] ^ pawn_to_remove; 
+
+  }else if(p == wpawn || p == bpawn){ //reset half clock if pawn move
     half_clock = 0;
     }else{
       half_clock++;
@@ -166,7 +176,7 @@ void Board::make_move(Piece p, bitboard move){
     full_count++;
   }
   to_move = to_move ? white : black; //switch side to_move
-
+  en_passant = 0; //reset en_passant square
 
   //update white/black piece variables - this might be kinda slow perhaps theres a faster way
   white_pieces = 0;
@@ -192,6 +202,12 @@ void Board::promote(Piece pawn, Piece promotion, bitboard square){
       black_pieces = boards[i] | black_pieces;
     }
   }
+}
+
+//sets the en_passant square to the targetsq
+//must be called after make move, otherwise it will be reset
+void Board::set_en_passant(bitboard targetsq){
+  en_passant = targetsq;
 }
 
 

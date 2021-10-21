@@ -60,6 +60,10 @@ class Board{
     //square - the square the promotion occurs
     void promote(Piece pawn, Piece promotion, bitboard square);
 
+    //set en_passant to targetsq
+    //must be called after make_move, otherwise it will get reset
+    void set_en_passant(bitboard targetsq);
+
     friend void test();
     void printBoard();
 };

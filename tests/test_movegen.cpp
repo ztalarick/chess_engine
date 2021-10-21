@@ -182,6 +182,25 @@ void test_gen_pawn_moves(){
 
     moveList.clear();
 
+    cout << "Test 7 - Pawn on d4 capturing other pawns" << endl;
+    Board pawn_captures_d4_pawn = Board("8/8/8/2ppp3/3P4/8/8/8 w - - 0 1");
+    gen_pawn_moves(moveList, pawn_captures_d4_pawn, wpawn); 
+    print_moveList(moveList); 
+
+    moveList.clear();
+
+    cout << "Test 8 - En Passant left" << endl;
+    Board en_passant_left = Board("8/8/8/3pP3/8/8/8/8 w - d6 0 1");
+    gen_pawn_moves(moveList, en_passant_left, wpawn);
+    print_moveList(moveList);
+
+    moveList.clear();
+
+    cout << "Test 9 - En Passant right" << endl;
+    Board en_passant_right = Board("8/8/8/4Pp2/8/8/8/8 w - f6 0 1");
+    gen_pawn_moves(moveList, en_passant_right, wpawn);
+    print_moveList(moveList);
+
 }
 
 int main(){
