@@ -42,5 +42,6 @@ bitboard gen_attacked_squares(Board pos, Side side, bool king);
 void gen_king_moves(std::vector<Board> &moveList, const Board &pos, Piece p);
 void gen_knight_moves(std::vector<Board> &moveList, const Board &pos, Piece p);
 void gen_pawn_moves(std::vector<Board> &moveList, const Board &pos, Piece p);
+void gen_rook_moves(std::vector<Board> &moveList, const Board &pos, Piece p);
 
 #endif

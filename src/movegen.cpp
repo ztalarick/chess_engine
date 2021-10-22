@@ -22,10 +22,7 @@ using namespace std;
 //for now generate psudeolegal moves
 //TODO consider making a new class/struct Move containing only the information
 //necessary to make the move and not the entire board state
-//TODO generate only legal moves
-//TODO Check edges of board
-//TODO FIX MOVEGEN FOR MORE THAN TWO PIECES WITH PAWN PROMOTIONS
-//TODO should change this to pass by reference as well
+//TODO generate only legal moves (handle checks/ moving king into check)
 vector<Board> movegen(vector<Board> &moveList, Board pos){
   //iterate every piece type that can move
   //use the fancy inline if statement to evaluate i to the correct indices
@@ -45,7 +42,7 @@ vector<Board> movegen(vector<Board> &moveList, Board pos){
 
     }
     if(p == wrook || p == brook){
-
+      gen_rook_moves(moveList, pos, p);
     }
     if(p == wpawn || p == bpawn){
       gen_pawn_moves(moveList, pos, p);
@@ -385,6 +382,102 @@ void gen_pawn_moves(vector<Board> &moveList, const Board &pos, Piece p){
           }       
       }
     }
+}
+
+//generate all legal rook moves and add to the moveList
+//rooks are sliding pieces and should be shifted in a loop in four different directions
+// >> 8
+// << 8
+// >> 1
+// << 1
+void gen_rook_moves(vector<Board> &moveList, const Board &pos, Piece p){
+  bitboard ally_board = pos.to_move ? pos.black_pieces : pos.white_pieces;
+  bitboard opp_board = pos.to_move ? pos.white_pieces : pos.black_pieces;
+  bitboard curr_move;
+  bitboard all_rooks = pos.boards[p];
+
+  vector<bitboard> sep_rooks(10);
+  separate_bits(sep_rooks, all_rooks);
+
+  for(int curr_rk = 0; curr_rk < 10; curr_rk++){
+    if(!sep_rooks.at(curr_rk)){ //if there is no rook at the current index
+      break;
+    }
+
+    // << 8
+    curr_move = sep_rooks[curr_rk] << 8;
+    for(int up = 0; up < 8; up++){
+      if(up != 0){
+        curr_move = curr_move << 8;
+      }
+      if(!no_ally_piece(ally_board, curr_move)){ //there is an allied piece
+        break; //stop sliding in this direction
+      }
+      //add the capture to the moveList
+      moveList.push_back(Board(pos, p, combine_bits(sep_rooks, curr_move, sep_rooks.at(curr_rk))));
+
+      if(!no_ally_piece(opp_board, curr_move) //there is an opponent piece
+      || (curr_move & 18374686479671623680ULL)){ //on the 8th rank
+        break; //stop sliding
+      }
+    }
+
+    // >> 8
+    curr_move = sep_rooks[curr_rk] >> 8;
+    for(int down = 0; down < 8; down++){
+      if(down != 0){
+      curr_move = curr_move >> 8;
+      }
+
+      if(!no_ally_piece(ally_board, curr_move)){ //there is an allied piece 
+        break; //stop sliding in this direction
+      }
+      //add the capture to the moveList
+      moveList.push_back(Board(pos, p, combine_bits(sep_rooks, curr_move, sep_rooks.at(curr_rk))));
+
+      if(!no_ally_piece(opp_board, curr_move)  //there is an opponent piece
+      || (curr_move & 255ULL)){                 //on the first rank
+        break; //stop sliding
+      }
+    }
+
+    // >> 1
+    curr_move = sep_rooks[curr_rk] >> 1;
+    for(int right = 0; right < 8; right++){
+      if(right != 0){
+      curr_move = curr_move >> 1;
+      }
+      if(!no_ally_piece(ally_board, curr_move) //there is an allied piece
+      ){  //on the H file
+        break; //stop sliding in this direction
+      }
+      //add the capture to the moveList
+      moveList.push_back(Board(pos, p, combine_bits(sep_rooks, curr_move, sep_rooks.at(curr_rk))));
+
+      if(!no_ally_piece(opp_board, curr_move)
+      || (curr_move & 72340172838076673ULL)){ //there is an opponent piece
+        break; //stop sliding
+      }
+    }
+
+    curr_move = sep_rooks[curr_rk] << 1;
+    for(int left = 0; left < 8; left++){
+      if(left != 0){
+      curr_move = curr_move << 1;
+      }
+      if(!no_ally_piece(ally_board, curr_move) //there is an allied piece
+      ){ //on the A file
+        break; //stop sliding in this direction
+      }
+      //add the capture to the moveList
+      moveList.push_back(Board(pos, p, combine_bits(sep_rooks, curr_move, sep_rooks.at(curr_rk))));
+
+      if(!no_ally_piece(opp_board, curr_move)
+      || (curr_move & 9259542123273814144ULL)){ //there is an opponent piece
+        break; //stop sliding
+      }
+    }
+  }
 }
 
 bool no_ally_piece (bitboard ally_pieces, bitboard move){

@@ -203,9 +203,30 @@ void test_gen_pawn_moves(){
 
 }
 
+void test_gen_rook_moves(){
+    vector<Board> moveList;
+
+    cout << "Test for gen_rook_moves: " << endl;
+
+    cout << "Test 1 rook on d4" << endl;
+    Board rook_d4 = Board("8/8/8/8/3R4/8/8/8 w - - 0 1");
+    gen_rook_moves(moveList, rook_d4, wrook);   
+    print_moveList(moveList);
+
+    moveList.clear();
+
+    cout << "Test 2: rook on d1" << endl;
+    Board rook_d1 = Board("8/8/8/8/8/8/8/3R4 w - - 0 1");
+    gen_rook_moves(moveList, rook_d1, wrook);
+    print_moveList(moveList);
+
+    moveList.clear();
+}
+
 int main(){
     //test_gen_king_moves();
     //test_gen_knight_moves();
-    test_gen_pawn_moves();
+    //test_gen_pawn_moves();
+    test_gen_rook_moves();
 
 }
