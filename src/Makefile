@@ -1,4 +1,4 @@
-CXX      = g++
+CXX      = g++ -std=c++17
 CXXFLAGS = -g  -Wall -Werror -pedantic-errors -fmessage-length=0
 
 main: main.o uci.o board.o movegen.o

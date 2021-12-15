@@ -31,6 +31,8 @@
 #include <iostream>
 #include <ctype.h>
 #include <algorithm>
+#include <iostream>
+
 
 #include "board.h"
 
@@ -176,6 +178,7 @@ void Board::make_move(Piece p, bitboard move){
     full_count++;
   }
   to_move = to_move ? white : black; //switch side to_move
+
   en_passant = 0; //reset en_passant square
 
   //update white/black piece variables - this might be kinda slow perhaps theres a faster way

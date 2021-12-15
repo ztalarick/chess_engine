@@ -1,4 +1,4 @@
-// g++ -o test_board.o test_board.cpp ../src/board.cpp
+// g++ -std=c++17 -o test_board.o test_board.cpp ../src/board.cpp
 /*
   Author: Zachary Talarick
   Date: 05/24/21

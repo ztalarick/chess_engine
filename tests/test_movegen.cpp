@@ -4,7 +4,9 @@
   Tests for the movegen.cpp file
 */
 
-// g++ -o test_movegen.exe test_movegen.cpp ../src/board.cpp ../src/movegen.cpp
+// g++ -std=c++17 -o test_movegen.exe test_movegen.cpp ../src/board.cpp ../src/movegen.cpp
+// g++ -std=c++17 -o test_movegen.o test_movegen.cpp ../src/board.cpp ../src/movegen.cpp
+
 
 
 #include <iostream>
@@ -215,12 +217,42 @@ void test_gen_rook_moves(){
 
     moveList.clear();
 
-    cout << "Test 2: rook on d1" << endl;
+    cout << "Test 2 black rook on d4" << endl;
+    Board black_rook_d4 = Board("8/8/8/8/3r4/8/8/8 b - - 0 1");
+    gen_rook_moves(moveList, black_rook_d4, brook);   
+    print_moveList(moveList);
+
+    moveList.clear();
+
+    cout << "Test 3: rook on d1" << endl;
     Board rook_d1 = Board("8/8/8/8/8/8/8/3R4 w - - 0 1");
     gen_rook_moves(moveList, rook_d1, wrook);
     print_moveList(moveList);
 
     moveList.clear();
+
+    cout << "Test 4: rook on d4 and allied pawn on d5" << endl;
+    Board rook_d4_pawn = Board("8/8/8/3P4/3R4/8/8/8 w - - 0 1");
+    gen_rook_moves(moveList, rook_d4_pawn, wrook);
+    print_moveList(moveList);
+
+    moveList.clear();
+
+    cout << "Test 5: white rook on d4 and black pawn on d5" << endl;
+    Board rook_d4_black_pawn = Board("8/8/8/3p4/3R4/8/8/8 w - - 0 1");
+    gen_rook_moves(moveList, rook_d4_black_pawn, wrook);
+    print_moveList(moveList);
+
+    moveList.clear();
+
+    cout << "Test 6: multiple rooks" << endl;
+    Board rook_d4_e5 = Board("8/8/8/4R3/3R4/8/8/8 w - - 0 1");
+    gen_rook_moves(moveList, rook_d4_e5, wrook);
+    print_moveList(moveList);
+
+    moveList.clear();
+
+
 }
 
 int main(){

@@ -225,10 +225,14 @@ void gen_pawn_moves(vector<Board> &moveList, const Board &pos, Piece p){
 
           
           curr_move = sep_pawns.at(i) << 9; //left capture
-          if(no_ally_piece(ally_board, curr_move) //there is no allied piece on the targeted square 
-          && (!(no_ally_piece(opp_board, curr_move))) //there is an opponent piece on the targeted square
-          || !(no_ally_piece(pos.en_passant, curr_move)) //there is an en passant available
-          && !(sep_pawns.at(i) & 9259542123273814144ULL)){ //not on the A file
+          if(
+            (no_ally_piece(ally_board, curr_move) //there is no allied piece on the targeted square 
+          && 
+          (!(no_ally_piece(opp_board, curr_move)))) //there is an opponent piece on the targeted square
+          || 
+          (!(no_ally_piece(pos.en_passant, curr_move)) //there is an en passant available
+          && 
+          !(sep_pawns.at(i) & 9259542123273814144ULL))){ //not on the A file
             bitboard new_pawns = combine_bits(sep_pawns, curr_move, sep_pawns.at(i));
 
             if(curr_move & 18374686479671623680ULL){ //promotion
@@ -254,10 +258,10 @@ void gen_pawn_moves(vector<Board> &moveList, const Board &pos, Piece p){
           } 
           //no piece allied or oponent, and it does not move to promotion square        
           curr_move = sep_pawns.at(i) << 7; //right capture
-          if(no_ally_piece(ally_board, curr_move)  
-          && (!(no_ally_piece(opp_board, curr_move)))
-          || (!(no_ally_piece(pos.en_passant, curr_move))) 
-          && !(sep_pawns.at(i) & 72340172838076673ULL)){ //not on the H file
+          if((no_ally_piece(ally_board, curr_move)  
+          && (!(no_ally_piece(opp_board, curr_move))))
+          || ((!(no_ally_piece(pos.en_passant, curr_move))) 
+          && !(sep_pawns.at(i) & 72340172838076673ULL))){ //not on the H file
             bitboard new_pawns = combine_bits(sep_pawns, curr_move, sep_pawns.at(i));
 
             if(curr_move & 18374686479671623680ULL){ //promotion
@@ -322,10 +326,10 @@ void gen_pawn_moves(vector<Board> &moveList, const Board &pos, Piece p){
 
           
           curr_move = sep_pawns.at(i) >> 9; //left capture
-          if(no_ally_piece(ally_board, curr_move) //there is no allied piece on the targeted square 
-          && (!(no_ally_piece(opp_board, curr_move))) //there is an opponent piece on the targeted square
-          || !(no_ally_piece(pos.en_passant, curr_move)) //there is an en passant available
-          && !(sep_pawns.at(i) & 72340172838076673ULL)){ //not on the H file
+          if((no_ally_piece(ally_board, curr_move) //there is no allied piece on the targeted square 
+          && (!(no_ally_piece(opp_board, curr_move))))//there is an opponent piece on the targeted square
+          || (!(no_ally_piece(pos.en_passant, curr_move)) //there is an en passant available
+          && !(sep_pawns.at(i) & 72340172838076673ULL))){ //not on the H file
             bitboard new_pawns = combine_bits(sep_pawns, curr_move, sep_pawns.at(i));
 
             if(curr_move & 255ULL){ //promotion
@@ -353,10 +357,10 @@ void gen_pawn_moves(vector<Board> &moveList, const Board &pos, Piece p){
           
           //no piece allied or oponent, and it does not move to promotion square        
           curr_move = sep_pawns.at(i) >> 7; //right capture
-          if(no_ally_piece(ally_board, curr_move)  
-          && (!(no_ally_piece(opp_board, curr_move)))
-          || (!(no_ally_piece(pos.en_passant, curr_move))) 
-          && !(sep_pawns.at(i) & 9259542123273814144ULL)){ //not on the A file
+          if((no_ally_piece(ally_board, curr_move)  
+          && (!(no_ally_piece(opp_board, curr_move))))
+          || ((!(no_ally_piece(pos.en_passant, curr_move))) 
+          && !(sep_pawns.at(i) & 9259542123273814144ULL))){ //not on the A file
             bitboard new_pawns = combine_bits(sep_pawns, curr_move, sep_pawns.at(i));
 
             if(curr_move & 255ULL){ //promotion
@@ -406,75 +410,85 @@ void gen_rook_moves(vector<Board> &moveList, const Board &pos, Piece p){
 
     // << 8
     curr_move = sep_rooks[curr_rk] << 8;
-    for(int up = 0; up < 8; up++){
-      if(up != 0){
-        curr_move = curr_move << 8;
-      }
-      if(!no_ally_piece(ally_board, curr_move)){ //there is an allied piece
-        break; //stop sliding in this direction
-      }
-      //add the capture to the moveList
-      moveList.push_back(Board(pos, p, combine_bits(sep_rooks, curr_move, sep_rooks.at(curr_rk))));
+    if(curr_move != 0){
+      for(int up = 0; up < 8; up++){
+        if(up != 0){
+          curr_move = curr_move << 8;
+        }
+        if(!no_ally_piece(ally_board, curr_move)){ //there is an allied piece
+          break; //stop sliding in this direction
+        }
+        //add the capture to the moveList
+        moveList.push_back(Board(pos, p, combine_bits(sep_rooks, curr_move, sep_rooks.at(curr_rk))));
 
-      if(!no_ally_piece(opp_board, curr_move) //there is an opponent piece
-      || (curr_move & 18374686479671623680ULL)){ //on the 8th rank
-        break; //stop sliding
+        if(!no_ally_piece(opp_board, curr_move) //there is an opponent piece
+        || (curr_move & 18374686479671623680ULL)){ //on the 8th rank
+          break; //stop sliding
+        }
       }
     }
 
     // >> 8
     curr_move = sep_rooks[curr_rk] >> 8;
-    for(int down = 0; down < 8; down++){
-      if(down != 0){
-      curr_move = curr_move >> 8;
-      }
+    if(curr_move != 0){
+      for(int down = 0; down < 8; down++){
+        if(down != 0){
+        curr_move = curr_move >> 8;
+        }
 
-      if(!no_ally_piece(ally_board, curr_move)){ //there is an allied piece 
-        break; //stop sliding in this direction
-      }
-      //add the capture to the moveList
-      moveList.push_back(Board(pos, p, combine_bits(sep_rooks, curr_move, sep_rooks.at(curr_rk))));
+        if(!no_ally_piece(ally_board, curr_move)){ //there is an allied piece 
+          break; //stop sliding in this direction
+        }
+        //add the capture to the moveList
+        moveList.push_back(Board(pos, p, combine_bits(sep_rooks, curr_move, sep_rooks.at(curr_rk))));
 
-      if(!no_ally_piece(opp_board, curr_move)  //there is an opponent piece
-      || (curr_move & 255ULL)){                 //on the first rank
-        break; //stop sliding
+        if(!no_ally_piece(opp_board, curr_move)  //there is an opponent piece
+        || (curr_move & 255ULL)){                 //on the first rank
+          break; //stop sliding
+        }
       }
     }
+
 
     // >> 1
     curr_move = sep_rooks[curr_rk] >> 1;
-    for(int right = 0; right < 8; right++){
-      if(right != 0){
-      curr_move = curr_move >> 1;
-      }
-      if(!no_ally_piece(ally_board, curr_move) //there is an allied piece
-      ){  //on the H file
-        break; //stop sliding in this direction
-      }
-      //add the capture to the moveList
-      moveList.push_back(Board(pos, p, combine_bits(sep_rooks, curr_move, sep_rooks.at(curr_rk))));
+    if(curr_move != 0){
+      for(int right = 0; right < 8; right++){
+        if(right != 0){
+        curr_move = curr_move >> 1;
+        }
+        if(!no_ally_piece(ally_board, curr_move) //there is an allied piece
+        ){  //on the H file
+          break; //stop sliding in this direction
+        }
+        //add the capture to the moveList
+        moveList.push_back(Board(pos, p, combine_bits(sep_rooks, curr_move, sep_rooks.at(curr_rk))));
 
-      if(!no_ally_piece(opp_board, curr_move)
-      || (curr_move & 72340172838076673ULL)){ //there is an opponent piece
-        break; //stop sliding
+        if(!no_ally_piece(opp_board, curr_move)
+        || (curr_move & 72340172838076673ULL)){ //there is an opponent piece
+          break; //stop sliding
+        }
       }
     }
+    
 
     curr_move = sep_rooks[curr_rk] << 1;
-    for(int left = 0; left < 8; left++){
-      if(left != 0){
-      curr_move = curr_move << 1;
-      }
-      if(!no_ally_piece(ally_board, curr_move) //there is an allied piece
-      ){ //on the A file
-        break; //stop sliding in this direction
-      }
-      //add the capture to the moveList
-      moveList.push_back(Board(pos, p, combine_bits(sep_rooks, curr_move, sep_rooks.at(curr_rk))));
+    if(curr_move != 0){
+      for(int left = 0; left < 8; left++){
+        if(left != 0){
+        curr_move = curr_move << 1;
+        }
+        if(!no_ally_piece(ally_board, curr_move) //there is an allied piece
+        ){ //on the A file
+          break; //stop sliding in this direction
+        }
+        //add the capture to the moveList
+        moveList.push_back(Board(pos, p, combine_bits(sep_rooks, curr_move, sep_rooks.at(curr_rk))));
 
-      if(!no_ally_piece(opp_board, curr_move)
-      || (curr_move & 9259542123273814144ULL)){ //there is an opponent piece
-        break; //stop sliding
+        if(!no_ally_piece(opp_board, curr_move)
+        || (curr_move & 9259542123273814144ULL)){ //there is an opponent piece
+          break; //stop sliding after capture
+        }
       }
     }
   }
