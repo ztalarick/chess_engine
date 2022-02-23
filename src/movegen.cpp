@@ -31,15 +31,15 @@ vector<Board> movegen(vector<Board> &moveList, Board pos){
     if(p == wking || p == bking){
       gen_king_moves(moveList, pos, p);
     }
-
     if(p == wqueen || p == bqueen){
-
+      gen_rook_moves(moveList, pos, p);
+      gen_bishop_moves(moveList, pos, p);
     }
     if(p == wknight || p == bknight){
       gen_knight_moves(moveList, pos, p);
     }
     if(p == wbishop || p == bbishop){
-
+      gen_bishop_moves(moveList, pos, p);
     }
     if(p == wrook || p == brook){
       gen_rook_moves(moveList, pos, p);
@@ -159,24 +159,24 @@ void gen_knight_moves(vector<Board> &moveList, const Board &pos, Piece p){
     }
 }
 
-//generate all legal pawn moves and add to the moveList
-//possible moves:
-// White:
-//    << 8  - no pieces in front and no promotion
-//    << 8  - no pieces in front and promotion
-//    << 16 - only on 2nd rank
-//    << 9  - attacking and not in a file and no promotion
-//    << 9  - attacking and not in a file and promotion
-//    << 7  - attacking and not in h file and no promotion
-//    << 7  - attacking and not in h file and promotion
-// Black:
-//    >> 8  - no pieces in front and no promotion
-//    >> 8  - no pieces in front and promotion
-//    >> 16 - only on 2nd rank
-//    >> 9  - attacking and not in a file and no promotion
-//    >> 9  - attacking and not in a file and promotion
-//    >> 7  - attacking and not in h file and no promotion
-//    >> 7  - attacking and not in h file and promotion
+/* generate all legal pawn moves and add to the moveList
+possible moves:
+White:
+   << 8  - no pieces in front and no promotion
+   << 8  - no pieces in front and promotion
+   << 16 - only on 2nd rank
+   << 9  - attacking and not in a file and no promotion
+   << 9  - attacking and not in a file and promotion
+   << 7  - attacking and not in h file and no promotion
+   << 7  - attacking and not in h file and promotion
+Black:
+   >> 8  - no pieces in front and no promotion
+   >> 8  - no pieces in front and promotion
+   >> 16 - only on 2nd rank
+   >> 9  - attacking and not in a file and no promotion
+   >> 9  - attacking and not in a file and promotion
+   >> 7  - attacking and not in h file and no promotion
+   >> 7  - attacking and not in h file and promotion */
 void gen_pawn_moves(vector<Board> &moveList, const Board &pos, Piece p){
       bitboard ally_board = pos.to_move ? pos.black_pieces : pos.white_pieces;
       bitboard opp_board = pos.to_move ? pos.white_pieces : pos.black_pieces;
@@ -487,6 +487,112 @@ void gen_rook_moves(vector<Board> &moveList, const Board &pos, Piece p){
 
         if(!no_ally_piece(opp_board, curr_move)
         || (curr_move & 9259542123273814144ULL)){ //there is an opponent piece
+          break; //stop sliding after capture
+        }
+      }
+    }
+  }
+}
+
+//generate all legal bishop moves and add to moveList
+//very similar to gen_rook_moves just diagonal
+// >> 9 - SE
+// << 9 - NW
+// >> 7 - SW
+// << 7 - NE
+void gen_bishop_moves(vector<Board> &moveList, const Board &pos, Piece p){
+  bitboard ally_board = pos.to_move ? pos.black_pieces : pos.white_pieces;
+  bitboard opp_board = pos.to_move ? pos.white_pieces : pos.black_pieces;
+  bitboard curr_move;
+  bitboard all_bishops = pos.boards[p];
+
+  vector<bitboard> sep_bishops(10);
+  separate_bits(sep_bishops, all_bishops);
+
+  for(int curr_bshp = 0; curr_bshp < 10; curr_bshp++){
+    if(!sep_bishops.at(curr_bshp)){ //if there is no rook at the current index
+      break;
+    }
+
+    // << 9 - NW
+    curr_move = sep_bishops[curr_bshp] << 9;
+    if(curr_move != 0){
+      for(int nw = 0; nw < 8; nw++){
+        if(nw != 0){
+          curr_move = curr_move << 9;
+        }
+        if(!no_ally_piece(ally_board, curr_move)){ //there is an allied piece
+          break; //stop sliding in this direction
+        }
+        //add the capture to the moveList
+        moveList.push_back(Board(pos, p, combine_bits(sep_bishops, curr_move, sep_bishops.at(curr_bshp))));
+
+        if(!no_ally_piece(opp_board, curr_move) //there is an opponent piece
+        || (curr_move & 18374686479671623680ULL) || (curr_move & 9259542123273814144ULL)){ //on the 8th rank or A file
+          break; //stop sliding
+        }
+      }
+    }
+
+    // >> 9 - SE
+    curr_move = sep_bishops[curr_bshp] >> 9;
+    if(curr_move != 0){
+      for(int se = 0; se < 8; se++){
+        if(se != 0){
+        curr_move = curr_move >> 9;
+        }
+
+        if(!no_ally_piece(ally_board, curr_move)){ //there is an allied piece 
+          break; //stop sliding in this direction
+        }
+        //add the capture to the moveList
+        moveList.push_back(Board(pos, p, combine_bits(sep_bishops, curr_move, sep_bishops.at(curr_bshp))));
+
+        if(!no_ally_piece(opp_board, curr_move)  //there is an opponent piece
+        || (curr_move & 255ULL) || (curr_move & 72340172838076673ULL)){ //on the first rank or in H file
+          break; //stop sliding
+        }
+      }
+    }
+
+
+    // >> 7 - SW
+    curr_move = sep_bishops[curr_bshp] >> 7;
+    if(curr_move != 0){
+      for(int sw = 0; sw < 8; sw++){
+        if(sw != 0){
+        curr_move = curr_move >> 7;
+        }
+        if(!no_ally_piece(ally_board, curr_move) //there is an allied piece
+        ){  //on the H file
+          break; //stop sliding in this direction
+        }
+        //add the capture to the moveList
+        moveList.push_back(Board(pos, p, combine_bits(sep_bishops, curr_move, sep_bishops.at(curr_bshp))));
+
+        if(!no_ally_piece(opp_board, curr_move) //there is an opponent piece
+        || (curr_move & 9259542123273814144ULL) || (curr_move & 255ULL)){  //on the first rank or in A file
+          break; //stop sliding
+        }
+      }
+    }
+    
+    // << 7 - NE
+    curr_move = sep_bishops[curr_bshp] << 7;
+    if(curr_move != 0){
+      for(int ne = 0; ne < 8; ne++){
+        if(ne != 0){
+        curr_move = curr_move << 7;
+        }
+        if(!no_ally_piece(ally_board, curr_move) //there is an allied piece
+        ){ //on the A file
+          break; //stop sliding in this direction
+        }
+        //add the capture to the moveList
+        moveList.push_back(Board(pos, p, combine_bits(sep_bishops, curr_move, sep_bishops.at(curr_bshp))));
+
+        if(!no_ally_piece(opp_board, curr_move) //there is an opponent piece
+        || (curr_move & 18374969058471772417ULL)){ // on the eigth rank or h file
           break; //stop sliding after capture
         }
       }

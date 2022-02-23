@@ -251,14 +251,54 @@ void test_gen_rook_moves(){
     print_moveList(moveList);
 
     moveList.clear();
+}
 
+void test_gen_bishop_moves(){
+    vector<Board> moveList;
 
+    cout << "Test for gen_bishop_moves: " << endl;
+
+    cout << "Test 1 bishop on d4" << endl;
+    Board bishop_d4 = Board("8/8/8/8/3B4/8/8/8 w - - 0 1");
+    gen_bishop_moves(moveList, bishop_d4, wbishop);   
+    print_moveList(moveList);
+
+    moveList.clear();
+}
+
+void test_gen_queen_moves(){
+    vector<Board> moveList;
+
+    cout << "Test for gen_queen_moves: " << endl;
+
+    cout << "Test 1 queen on d4" << endl;
+    Board queen_d4 = Board("8/8/8/8/3Q4/8/8/8 w - - 0 1");
+    gen_rook_moves(moveList, queen_d4, wqueen);   
+    gen_bishop_moves(moveList, queen_d4, wqueen);   
+    print_moveList(moveList);
+
+    moveList.clear();
+    
+}
+
+void test_movegen(){
+    vector<Board> moveList;
+    cout << "Test for gen_queen_moves: " << endl;
+
+    cout << "Test 1 queen on d4" << endl;
+    Board starting_white_pos = Board("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1");
+    movegen(moveList, starting_white_pos);  
+    print_moveList(moveList);
+
+    moveList.clear();
 }
 
 int main(){
     //test_gen_king_moves();
     //test_gen_knight_moves();
     //test_gen_pawn_moves();
-    test_gen_rook_moves();
-
+    //test_gen_rook_moves();
+    //test_gen_bishop_moves();
+    // test_gen_queen_moves();
+    test_movegen();
 }
