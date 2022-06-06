@@ -12,8 +12,6 @@
     -Perft testing function
 */
 
-#include <iostream>
-
 #include "movegen.h"
 
 using namespace std;
@@ -24,29 +22,22 @@ using namespace std;
 //necessary to make the move and not the entire board state
 //TODO generate only legal moves (handle checks/ moving king into check)
 vector<Board> movegen(vector<Board> &moveList, Board pos){
-  //iterate every piece type that can move
-  //use the fancy inline if statement to evaluate i to the correct indices
-  for(int i = (pos.to_move ? 0 : 6); i < (pos.to_move ? 6 : 12); i = i + 1){
-    Piece p = static_cast<Piece>(i);
-    if(p == wking || p == bking){
-      gen_king_moves(moveList, pos, p);
-    }
-    if(p == wqueen || p == bqueen){
-      gen_rook_moves(moveList, pos, p);
-      gen_bishop_moves(moveList, pos, p);
-    }
-    if(p == wknight || p == bknight){
-      gen_knight_moves(moveList, pos, p);
-    }
-    if(p == wbishop || p == bbishop){
-      gen_bishop_moves(moveList, pos, p);
-    }
-    if(p == wrook || p == brook){
-      gen_rook_moves(moveList, pos, p);
-    }
-    if(p == wpawn || p == bpawn){
-      gen_pawn_moves(moveList, pos, p);
-    }
+  if (!pos.to_move){ // 0 - white | 1 - black | so first block is white
+    gen_king_moves(moveList, pos, wking);
+    gen_rook_moves(moveList, pos, wqueen);
+    gen_bishop_moves(moveList, pos, wqueen);
+    gen_rook_moves(moveList, pos, wrook);
+    gen_bishop_moves(moveList, pos, wbishop);
+    gen_knight_moves(moveList, pos, wknight);
+    gen_pawn_moves(moveList, pos, wpawn);
+  }else {
+    gen_king_moves(moveList, pos, bking);
+    gen_rook_moves(moveList, pos, bqueen);
+    gen_bishop_moves(moveList, pos, bqueen);
+    gen_rook_moves(moveList, pos, brook);
+    gen_bishop_moves(moveList, pos, bbishop);
+    gen_knight_moves(moveList, pos, bknight);
+    gen_pawn_moves(moveList, pos, bpawn);
   }
   return moveList;
 }

@@ -32,6 +32,7 @@
 #include <ctype.h>
 #include <algorithm>
 #include <iostream>
+#include <vector>
 
 
 #include "board.h"
@@ -213,16 +214,44 @@ void Board::set_en_passant(bitboard targetsq){
   en_passant = targetsq;
 }
 
+//TODO - change this to flip the board.
+// 1 solution, compare board with 1 and all 0s instead of 0000001
+//another solution, add all chars to a vector, reverse it then print it.
+void Board::printBitboard(bitboard b){
+  vector<bitboard> squares;
+  for(int j = 1; j < 65; j++){
+    squares.push_back( (b & 1) );
+  //   cout << (b & 1) << ((j % 8 == 0) ? '\n' : ' ');
+    b = b >> 1;
+  }
+  reverse(squares.begin(), squares.end());
+  for(int j = 1; j < 65; j++){
+    cout << squares.at(j - 1) << ((j % 8 == 0) ? '\n' : ' ');
+  }
+}
 
 void Board::printBoard(){
+  unordered_map<int,string> pieces = { {0, "white king"}, {1, "white queen"}, {2, "white knight"}, {3, "white bishop"}, {4, "white rook"}, {5, "white pawn"},
+    {6, "black king"}, {7, "black queen"}, {8, "black knight"}, {9, "black bishop"}, {10, "black rook"}, {11, "black pawn"} };
+
   cout << "Side to move: " << (to_move ? "Black" : "White") << endl;
   cout << endl << "Bitboards: " << endl;
   for(int i = 0; i < 12; i++){
-    cout << "Bitboard " << i << ": " << boards[i] << endl;
+    cout << "Bitboard " << pieces.at(i) << ": " << boards[i] << endl;
+
+    printBitboard(boards[i]);
+
+  cout << endl;
+
   }
 
   cout << "White Pieces: " << white_pieces << endl;
+  printBitboard(white_pieces);
+  cout << endl;
+
   cout << "Black Pieces: " << black_pieces << endl;
+  printBitboard(black_pieces);
+  cout << endl;
 
   cout << "Castling Ability: " << "WK - " << wk_castle 
   << " WQ - " << wq_castle << " BK - " << bk_castle << " BQ - " << bq_castle << endl;

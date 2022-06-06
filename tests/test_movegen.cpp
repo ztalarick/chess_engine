@@ -283,22 +283,84 @@ void test_gen_queen_moves(){
 
 void test_movegen(){
     vector<Board> moveList;
-    cout << "Test for gen_queen_moves: " << endl;
+    cout << "Test for movegen: " << endl;
 
-    cout << "Test 1 queen on d4" << endl;
+    cout << "Test starting position" << endl;
     Board starting_white_pos = Board("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1");
     movegen(moveList, starting_white_pos);  
-    print_moveList(moveList);
+    // print_moveList(moveList);
+    cout << moveList.size() << endl;
 
     moveList.clear();
 }
 
+void test_starting(){
+    vector<Board> moveList;
+    Board starting_white_pos = Board("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1");
+
+    cout << "King" << endl;
+    gen_king_moves(moveList, starting_white_pos, wking);
+    print_moveList(moveList);
+    moveList.clear();
+
+    cout << "Queen" << endl;
+    gen_rook_moves(moveList, starting_white_pos, wqueen);
+    gen_bishop_moves(moveList, starting_white_pos, wqueen);
+    print_moveList(moveList);
+    moveList.clear();
+
+    cout << "Rook" << endl;
+    gen_rook_moves(moveList, starting_white_pos, wrook);
+    print_moveList(moveList);
+    moveList.clear();
+
+    cout << "Bishop" << endl;
+    gen_bishop_moves(moveList, starting_white_pos, wbishop);
+    print_moveList(moveList);
+    moveList.clear();
+
+    cout << "Knight" << endl;
+    gen_knight_moves(moveList, starting_white_pos, wknight);
+    print_moveList(moveList);
+    moveList.clear();
+
+    cout << "Pawn" << endl;
+    gen_pawn_moves(moveList, starting_white_pos, wpawn);
+    print_moveList(moveList);
+    moveList.clear();
+
+
+}
+
+
+int perft(int depth, Board posistion){
+    vector<Board> moveList;
+    bitboard nodes = 0;
+
+    if(depth == 0)
+        return 0;
+    
+    movegen(moveList, posistion);
+    nodes += moveList.size();
+    for(Board b : moveList){
+        nodes += perft(depth - 1, b);
+    }
+    return nodes;
+}
+
 int main(){
-    //test_gen_king_moves();
+    // test_gen_king_moves();
     //test_gen_knight_moves();
     //test_gen_pawn_moves();
     //test_gen_rook_moves();
     //test_gen_bishop_moves();
     // test_gen_queen_moves();
-    test_movegen();
+    // test_movegen();
+    // test_starting();
+
+    cout << "PERFT" << endl;
+    Board starting_white_pos = Board("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1");
+    int count = perft(2, starting_white_pos);
+    cout << "Count: " << count << endl;    
+
 }

@@ -65,6 +65,9 @@ class Board{
     void set_en_passant(bitboard targetsq);
 
     friend void test();
+    
+    //printing functions
+    void printBitboard(bitboard b);
     void printBoard();
 };
 
