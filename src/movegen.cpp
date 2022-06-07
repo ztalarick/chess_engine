@@ -6,7 +6,6 @@
   it generates a list of all positions that can be reached by one legal move
 
   TODO:
-    -movegen function
     -quiescence list (list of quiet moves)
     -special gen function for when in check
     -Perft testing function

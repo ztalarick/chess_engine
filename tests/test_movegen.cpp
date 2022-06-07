@@ -286,9 +286,10 @@ void test_movegen(){
     cout << "Test for movegen: " << endl;
 
     cout << "Test starting position" << endl;
-    Board starting_white_pos = Board("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1");
+    Board starting_white_pos = Board("rnbqkbnr/pppppppp/8/8/8/N7/PPPPPPPP/R1BQKBNR b KQkq - 0 1");
     movegen(moveList, starting_white_pos);  
-    // print_moveList(moveList);
+    print_moveList(moveList);
+
     cout << moveList.size() << endl;
 
     moveList.clear();
@@ -338,13 +339,14 @@ int perft(int depth, Board posistion){
     bitboard nodes = 0;
 
     if(depth == 0)
-        return 0;
+        return 1;
     
     movegen(moveList, posistion);
-    nodes += moveList.size();
+
     for(Board b : moveList){
         nodes += perft(depth - 1, b);
     }
+    
     return nodes;
 }
 
@@ -358,9 +360,10 @@ int main(){
     // test_movegen();
     // test_starting();
 
-    cout << "PERFT" << endl;
+
+    cout << endl << "PERFT" << endl;
     Board starting_white_pos = Board("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1");
-    int count = perft(2, starting_white_pos);
+    int count = perft(3, starting_white_pos);
     cout << "Count: " << count << endl;    
 
 }

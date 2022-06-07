@@ -5,7 +5,7 @@
 #include "board.h"
 
 // function to generate all legal moves from a given position
-// return - a vector of board states containg every legal branching board state
+// return - the length of moveList
 // pos - the start position
 // moveList - vector containing the moves, passed by reference
 std::vector<Board> movegen(std::vector<Board> &moveList, Board pos);

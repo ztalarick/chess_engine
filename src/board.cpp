@@ -22,7 +22,7 @@
   12 total bitboards
 
   TODO:
-    -finish the contructor to get all information out of a FEN string
+    - finish the contructor to get all information out of a FEN string
     - represent the 50 move rule
     - en passant
     - castling
@@ -176,7 +176,7 @@ void Board::make_move(Piece p, bitboard move){
     }
 
   if(to_move == black){ //increment fullmove counter when black moves
-    full_count++;
+    full_count++; //TODO something messed up here.
   }
   to_move = to_move ? white : black; //switch side to_move
 
@@ -214,9 +214,6 @@ void Board::set_en_passant(bitboard targetsq){
   en_passant = targetsq;
 }
 
-//TODO - change this to flip the board.
-// 1 solution, compare board with 1 and all 0s instead of 0000001
-//another solution, add all chars to a vector, reverse it then print it.
 void Board::printBitboard(bitboard b){
   vector<bitboard> squares;
   for(int j = 1; j < 65; j++){
