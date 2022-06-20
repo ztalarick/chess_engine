@@ -3,12 +3,14 @@
 
 #include <vector>
 #include "board.h"
+#include "move.h"
+#include "utils.h"
 
 // function to generate all legal moves from a given position
 // return - the length of moveList
 // pos - the start position
 // moveList - vector containing the moves, passed by reference
-std::vector<Board> movegen(std::vector<Board> &moveList, Board pos);
+int movegen(std::vector<Move> &moveList, Board pos);
 
 //checks if an ally piece exists in the square you want to move too
 // ally_pieces - a bitboard with a bitset for all allied pieces
@@ -31,18 +33,16 @@ void separate_bits(std::vector<bitboard> &bits, bitboard board);
 bitboard combine_bits(std::vector<bitboard> &bits, bitboard move, bitboard old_piece);
 
 //generates attaked squares
-//king boolean decides if to include the king in the calculation
-//used for generating legal king moves
-bitboard gen_attacked_squares(Board pos, Side side, bool king);
+bitboard gen_attacked_squares(Board pos, Side side);
 
 //functions to generate and add all legal moves to the moveList by piece
 //moveList - a vector of board positions that contain the boardstate after a move, passed by reference
 //pos - current position you want to generate moves for, passed by reference
 //p - the piece you want to generate for
-void gen_king_moves(std::vector<Board> &moveList, const Board &pos, Piece p);
-void gen_knight_moves(std::vector<Board> &moveList, const Board &pos, Piece p);
-void gen_pawn_moves(std::vector<Board> &moveList, const Board &pos, Piece p);
-void gen_rook_moves(std::vector<Board> &moveList, const Board &pos, Piece p);
-void gen_bishop_moves(std::vector<Board> &moveList, const Board &pos, Piece p);
+void gen_king_moves(std::vector<Move> &moveList, const Board &pos, Piece p);
+void gen_knight_moves(std::vector<Move> &moveList, const Board &pos, Piece p);
+void gen_pawn_moves(std::vector<Move> &moveList, const Board &pos, Piece p);
+void gen_rook_moves(std::vector<Move> &moveList, const Board &pos, Piece p);
+void gen_bishop_moves(std::vector<Move> &moveList, const Board &pos, Piece p);
 
 #endif

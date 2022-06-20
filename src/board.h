@@ -1,16 +1,12 @@
 #ifndef _BOARD_H
 #define _BOARD_H
 
-typedef unsigned long long bitboard;
-const bitboard universe = 0xffffffffffffffffULL;
-
-enum Piece {wking, wqueen, wknight, wbishop, wrook, wpawn,
-   bking, bqueen, bknight, bbishop, brook, bpawn};
-
-enum Side {white, black};
-
 #include <unordered_map>
 #include <string>
+#include <stack>
+
+#include "move.h"
+#include "utils.h"
 
 class Board{
   public:
@@ -38,21 +34,32 @@ class Board{
     //tracks the target squares after a double pawn move for en passant
     bitboard en_passant;
 
+    //LIFO stack to track all moves made
+    std::stack<Board*> game;
+
     //contructors
+    //contruct a copy of the current board
+    //src - previous board passed by reference
+    Board(const Board *src);
+
     //construct a board from a previous board then move
     // src - previous board, passed by reference
-    // p - piece that was moved
-    // move - the bitboard updated with the move
-    Board(const Board &src, Piece p, bitboard move);
+    // m - move to be made
+    Board(const Board &src, Move m);
 
     //construct a board from a fen string
     //fen - fen string to construct the board
     Board(std::string fen);
 
+    //default constructor
+    Board() = default;
+
     //update a board state to reflect the given move
-    //p - piece to be moved
-    //move - the new bitboard with the updated move
-    void make_move(Piece p, bitboard move);
+    //m - move to be made
+    void make_move(Move m);
+
+    //update a board to undo the previous move
+    void undo_move();
 
     //promote a pawn on the eigth rank to the given piece
     //pawn - the pawn type to be promoted

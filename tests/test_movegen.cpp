@@ -4,8 +4,8 @@
   Tests for the movegen.cpp file
 */
 
-// g++ -std=c++17 -o test_movegen.exe test_movegen.cpp ../src/board.cpp ../src/movegen.cpp
-// g++ -std=c++17 -o test_movegen.o test_movegen.cpp ../src/board.cpp ../src/movegen.cpp
+// g++ -std=c++17 -o test_movegen.exe test_movegen.cpp ../src/board.cpp ../src/movegen.cpp ../src/move.cpp
+// g++ -std=c++17 -o test_movegen.o test_movegen.cpp ../src/board.cpp ../src/movegen.cpp ../src/move.cpp
 
 
 
@@ -19,18 +19,27 @@
 using namespace std;
 
 
-void print_moveList(vector<Board> &moveList){
+void print_moveList(vector<Move> &moveList){
     int num_moves = 0;
-    for(Board b: moveList){
-        b.printBoard();
+    cout << endl << "Move List: " << endl;
+    for(Move m: moveList){
         cout << endl;
-        num_moves++;
+        m.print_move();
+        cout << endl;
+    }
+    cout << "Number of moves generated: " << num_moves << endl << endl; 
+}
+
+void print_black_white_pieces(vector<Move> &moveList){
+    int num_moves = 0;
+    for(Move m: moveList){
+        //todo
     }
     cout << "Number of moves generated: " << num_moves << endl << endl; 
 }
 
 void test_gen_king_moves(){
-    vector<Board> moveList;
+    vector<Move> moveList;
  
     cout << "Test for gen_king_moves: " << endl;
 
@@ -94,7 +103,7 @@ void test_gen_king_moves(){
 }
 
 void test_gen_knight_moves(){
-    vector<Board> moveList;
+    vector<Move> moveList;
     cout << "Tests for gen_knight_moves" << endl;
 
     //knight on d4
@@ -138,7 +147,7 @@ void test_gen_knight_moves(){
 }
 
 void test_gen_pawn_moves(){
-    vector<Board> moveList;
+    vector<Move> moveList;
     cout << "Tests for gen_pawn_moves" << endl;
 
     //pawn on e2 and d4
@@ -206,7 +215,7 @@ void test_gen_pawn_moves(){
 }
 
 void test_gen_rook_moves(){
-    vector<Board> moveList;
+    vector<Move> moveList;
 
     cout << "Test for gen_rook_moves: " << endl;
 
@@ -254,7 +263,7 @@ void test_gen_rook_moves(){
 }
 
 void test_gen_bishop_moves(){
-    vector<Board> moveList;
+    vector<Move> moveList;
 
     cout << "Test for gen_bishop_moves: " << endl;
 
@@ -267,7 +276,7 @@ void test_gen_bishop_moves(){
 }
 
 void test_gen_queen_moves(){
-    vector<Board> moveList;
+    vector<Move> moveList;
 
     cout << "Test for gen_queen_moves: " << endl;
 
@@ -281,22 +290,8 @@ void test_gen_queen_moves(){
     
 }
 
-void test_movegen(){
-    vector<Board> moveList;
-    cout << "Test for movegen: " << endl;
-
-    cout << "Test starting position" << endl;
-    Board starting_white_pos = Board("rnbqkbnr/pppppppp/8/8/8/N7/PPPPPPPP/R1BQKBNR b KQkq - 0 1");
-    movegen(moveList, starting_white_pos);  
-    print_moveList(moveList);
-
-    cout << moveList.size() << endl;
-
-    moveList.clear();
-}
-
 void test_starting(){
-    vector<Board> moveList;
+    vector<Move> moveList;
     Board starting_white_pos = Board("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1");
 
     cout << "King" << endl;
@@ -329,24 +324,39 @@ void test_starting(){
     gen_pawn_moves(moveList, starting_white_pos, wpawn);
     print_moveList(moveList);
     moveList.clear();
+}
 
+void test_movegen(){
+    vector<Move> moveList;
+    cout << "Test for movegen: " << endl;
 
+    cout << "Test d4 e5 position" << endl;
+    Board starting_white_pos = Board("rnbqkbnr/pppp1ppp/8/4p3/3P4/8/PPP1PPPP/RKBQKBNR w KQkq - 0 1");
+    movegen(moveList, starting_white_pos);  
+    // print_moveList(moveList);
+    print_black_white_pieces(moveList);
+    cout << moveList.size() << endl;
+
+    moveList.clear();
 }
 
 
 int perft(int depth, Board posistion){
-    vector<Board> moveList;
+    vector<Move> moveList;
     bitboard nodes = 0;
-
     if(depth == 0)
         return 1;
-    
     movegen(moveList, posistion);
+    print_moveList(moveList);
+    for(Move m : moveList){
+        cout << endl;
+        m.print_move();
+        cout << endl;
+        posistion.make_move(m);
+        nodes += perft(depth - 1, posistion);
+        posistion.undo_move();
 
-    for(Board b : moveList){
-        nodes += perft(depth - 1, b);
     }
-    
     return nodes;
 }
 
@@ -363,7 +373,7 @@ int main(){
 
     cout << endl << "PERFT" << endl;
     Board starting_white_pos = Board("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1");
-    int count = perft(3, starting_white_pos);
+    int count = perft(2, starting_white_pos);
     cout << "Count: " << count << endl;    
 
 }

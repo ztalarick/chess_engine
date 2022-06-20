@@ -20,12 +20,12 @@
       -Rook
       -Pawn
   12 total bitboards
+*/
 
+/*
   TODO:
-    - finish the contructor to get all information out of a FEN string
-    - represent the 50 move rule
-    - en passant
-    - castling
+    1. investigate bug with move clock counter
+    2. try to figure out a way to fix the game stack type or put it on the heap
 */
 
 #include <iostream>
@@ -33,7 +33,6 @@
 #include <algorithm>
 #include <iostream>
 #include <vector>
-
 
 #include "board.h"
 
@@ -55,8 +54,23 @@ void split(string* arr, string s, string delimeter){
   arr[array_index] = s;
 }
 
+Board::Board(const Board *src){
+  std::copy(src->boards, src->boards + 12, boards);
+  to_move = src->to_move;
+  white_pieces = src->white_pieces;
+  black_pieces = src->black_pieces;
+  wk_castle = src->wk_castle;
+  wq_castle = src->wq_castle;
+  bk_castle = src->bk_castle;
+  bq_castle = src->bq_castle;
+  en_passant = src->en_passant;
+  half_clock = src->half_clock;
+  full_count = src->full_count;
+  game = src->game;
+}
+
 //contructor to make a copy of a board and make the given move
-Board::Board(const Board &src, Piece p, bitboard move){
+Board::Board(const Board &src, Move m){
   std::copy(src.boards, src.boards + 12, boards);
   to_move = src.to_move;
   white_pieces = src.white_pieces;
@@ -68,12 +82,14 @@ Board::Board(const Board &src, Piece p, bitboard move){
   en_passant = src.en_passant;
   half_clock = src.half_clock;
   full_count = src.full_count;
+  game = src.game;
 
-  this->make_move(p, move);
+  this->make_move(m);
 }
 
 //The Constructor will take a fen string then initialize the bitboard array
 Board::Board(string fen){
+  game = stack<Board*>();
   //initialize every board to 0
   for(int i = 0; i < 12; i++){
     boards[i] = 0;
@@ -147,41 +163,55 @@ Board::Board(string fen){
   }
 }
 
-void Board::make_move(Piece p, bitboard move){
-  boards[p] = move;
+void Board::make_move(Move m){
+  //create a copy of the current position before the move
+  // Board prev = *this;
+  Board prev = Board(this);
+  //add to stack
+  game.push(&prev);
 
-  if(((to_move == white) && (black_pieces & move))){ // capture
+  boards[m.p] = m.move;
+  
+  //handling promotion
+  if((m.p == wpawn && m.move & 18374686479671623680ULL) || (m.p == bpawn && m.move & 255ULL)){
+    promote(m.p, m.promote, m.move);
+  }
+
+  if(((to_move == white) && (black_pieces & m.move))){ // capture
     half_clock = 0; //reset half clock
     for(int i = 6; i < 12; i++){ //iterate through all enemy pieces
-      boards[i] = boards[i] & move ? (boards[i] ^ move) : boards[i]; //remove the bits that are set on the move square
+      boards[i] = boards[i] & m.move ? (boards[i] ^ m.move) : boards[i]; //remove the bits that are set on the move square
     }
-  } else if((to_move == black) && (white_pieces & move)){ //same for black side
+  } else if((to_move == black) && (white_pieces & m.move)){ //same for black side
     half_clock = 0; //reset half clock
     for(int i = 0; i < 6; i++){ //iterate through all enemy pieces
-       boards[i] = boards[i] & move ? (boards[i] ^ move) : boards[i]; //remove the bits that are set on the move square
+       boards[i] = boards[i] & m.move ? (boards[i] ^ m.move) : boards[i]; //remove the bits that are set on the move square
     }
-  } else if((to_move == white) && (move & en_passant)){//en passant and white move
+  } else if((to_move == white) && (m.move & en_passant)){//en passant and white move
     half_clock = 0; //reset half clock
     bitboard pawn_to_remove = en_passant >> 8;
     boards[bpawn] = boards[bpawn] ^ pawn_to_remove; //exclusive or
-  }else if((to_move == black) && (move & en_passant)){ // en passant and black move
+  }else if((to_move == black) && (m.move & en_passant)){ // en passant and black move
     half_clock = 0; //reset half clock
     bitboard pawn_to_remove = en_passant << 8;
     boards[wpawn] = boards[wpawn] ^ pawn_to_remove; 
 
-  }else if(p == wpawn || p == bpawn){ //reset half clock if pawn move
+  }else if(m.p == wpawn || m.p == bpawn){ //reset half clock if pawn move
     half_clock = 0;
     }else{
       half_clock++;
     }
-
   if(to_move == black){ //increment fullmove counter when black moves
     full_count++; //TODO something messed up here.
   }
   to_move = to_move ? white : black; //switch side to_move
 
-  en_passant = 0; //reset en_passant square
-
+  //handle en passant
+  if(m.en_passant){
+    set_en_passant(m.en_passant);
+  }else{
+    set_en_passant(0); //reset en_passant square
+  }
   //update white/black piece variables - this might be kinda slow perhaps theres a faster way
   white_pieces = 0;
   black_pieces = 0;
@@ -192,6 +222,24 @@ void Board::make_move(Piece p, bitboard move){
       black_pieces = boards[i] | black_pieces;
     }
   }
+}
+
+//TODO
+void Board::undo_move(){
+  Board* prev = game.top();
+  game.pop();
+  std::copy(prev->boards, prev->boards + 12, boards);
+  to_move = prev->to_move;
+  white_pieces = prev->white_pieces;
+  black_pieces = prev->black_pieces;
+  wk_castle = prev->wk_castle;
+  wq_castle = prev->wq_castle;
+  bk_castle = prev->bk_castle;
+  bq_castle = prev->bq_castle;
+  en_passant = prev->en_passant;
+  half_clock = prev->half_clock;
+  full_count = prev->full_count;
+  return;
 }
 
 void Board::promote(Piece pawn, Piece promotion, bitboard square){
