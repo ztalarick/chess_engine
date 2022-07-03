@@ -165,8 +165,7 @@ Board::Board(string fen){
 
 void Board::make_move(Move m){
   //create a copy of the current position before the move
-  // Board prev = *this;
-  Board prev = Board(this);
+  static Board prev = Board(this);
   //add to stack
   game.push(&prev);
 

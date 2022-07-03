@@ -261,7 +261,7 @@ void gen_pawn_moves(vector<Move> &moveList, const Board &pos, Piece p){
           curr_move = sep_pawns.at(i) >> 16; //double move
           if((sep_pawns.at(i) & 71776119061217280ULL) && no_ally_piece(ally_board, curr_move) //check on 2nd rank
           && no_ally_piece(opp_board, curr_move)){
-            moveList.push_back(Move(combine_bits(sep_pawns, curr_move, sep_pawns.at(i)), p, curr_move >> 8));
+            moveList.push_back(Move(combine_bits(sep_pawns, curr_move, sep_pawns.at(i)), p, curr_move << 8));
           }
 
           curr_move = sep_pawns.at(i) >> 9; //left capture

@@ -15,12 +15,14 @@ Move::Move(bitboard move, Piece p){
     this->move = move;
     this->p = p;
     this->en_passant = false;
+    this->promote = none;
 }
 
 Move::Move(bitboard move, Piece p, bitboard en_passant){
     this->move = move;
     this->p = p;
     this->en_passant = en_passant;
+    this->promote = none;
 }
 
 Move::Move(bitboard move, Piece p, Piece promote){

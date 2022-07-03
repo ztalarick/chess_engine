@@ -14,6 +14,7 @@
 
 #include "../src/board.h"
 #include "../src/movegen.h"
+#include "../src/utils.h"
 
 
 using namespace std;
@@ -26,6 +27,7 @@ void print_moveList(vector<Move> &moveList){
         cout << endl;
         m.print_move();
         cout << endl;
+        num_moves++;
     }
     cout << "Number of moves generated: " << num_moves << endl << endl; 
 }
@@ -347,11 +349,7 @@ int perft(int depth, Board posistion){
     if(depth == 0)
         return 1;
     movegen(moveList, posistion);
-    print_moveList(moveList);
     for(Move m : moveList){
-        cout << endl;
-        m.print_move();
-        cout << endl;
         posistion.make_move(m);
         nodes += perft(depth - 1, posistion);
         posistion.undo_move();
@@ -373,7 +371,7 @@ int main(){
 
     cout << endl << "PERFT" << endl;
     Board starting_white_pos = Board("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1");
-    int count = perft(2, starting_white_pos);
+    int count = perft(3, starting_white_pos);
     cout << "Count: " << count << endl;    
 
 }
