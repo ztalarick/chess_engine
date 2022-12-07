@@ -39,21 +39,6 @@
 using namespace std;
 
 
-//this function is to split a fen string by a delimeter
-//may move this to another file?
-void split(string* arr, string s, string delimeter){
-  size_t pos = 0;
-  int array_index = 0;
-  string token;
-  while ((pos = s.find(delimeter)) != std::string::npos) {
-    token = s.substr(0, pos);
-    arr[array_index] = token;
-    array_index++;
-    s.erase(0, pos + delimeter.length());
-  }
-  arr[array_index] = s;
-}
-
 Board::Board(const Board *src){
   std::copy(src->boards, src->boards + 12, boards);
   to_move = src->to_move;
@@ -165,12 +150,12 @@ Board::Board(string fen){
 
 void Board::make_move(Move m){
   //create a copy of the current position before the move
-  static Board prev = Board(this);
+  static Board prev = Board(this); //TODO - explore performance of putting this on the heap instead of being static
   //add to stack
   game.push(&prev);
 
-  boards[m.p] = m.move;
-  
+  boards[m.p] = (m.move | m.prev) ^ boards[m.p];
+
   //handling promotion
   if((m.p == wpawn && m.move & 18374686479671623680ULL) || (m.p == bpawn && m.move & 255ULL)){
     promote(m.p, m.promote, m.move);
@@ -223,7 +208,24 @@ void Board::make_move(Move m){
   }
 }
 
-//TODO
+
+/*
+Example:
+if white just made a move
+position.to_move is now black
+attacked squares should be black attacks
+and the king should be the white king, the opposite of the current state of to_move
+*/
+//check if the position is valid; for use in make move
+bool Board::is_valid(bitboard attacked_squares){
+  //attacked_squares is white attacks if to_move is white and vice versa
+  //this is called right after the move is made.
+  //if the king is not attacked -> return true
+
+  bitboard king = this->to_move ? boards[wking] : boards[bking];
+  return !(king & attacked_squares);
+}
+
 void Board::undo_move(){
   Board* prev = game.top();
   game.pop();
@@ -261,18 +263,6 @@ void Board::set_en_passant(bitboard targetsq){
   en_passant = targetsq;
 }
 
-void Board::printBitboard(bitboard b){
-  vector<bitboard> squares;
-  for(int j = 1; j < 65; j++){
-    squares.push_back( (b & 1) );
-  //   cout << (b & 1) << ((j % 8 == 0) ? '\n' : ' ');
-    b = b >> 1;
-  }
-  reverse(squares.begin(), squares.end());
-  for(int j = 1; j < 65; j++){
-    cout << squares.at(j - 1) << ((j % 8 == 0) ? '\n' : ' ');
-  }
-}
 
 void Board::printBoard(){
   unordered_map<int,string> pieces = { {0, "white king"}, {1, "white queen"}, {2, "white knight"}, {3, "white bishop"}, {4, "white rook"}, {5, "white pawn"},

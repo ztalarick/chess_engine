@@ -7,7 +7,10 @@
 class Move{
     public:
     //contains 1 bit set with the square p is moving to
-    bitboard move; 
+    bitboard move;
+
+    //contains 1 bit set with the square p is moving from
+    bitboard prev;
 
     //the piece to that is being moved.
     Piece p;
@@ -19,9 +22,9 @@ class Move{
     bitboard en_passant;
 
     //constructors
-    Move(bitboard move, Piece p, bitboard en_passant);
-    Move(bitboard move, Piece p, Piece promote);
-    Move(bitboard move, Piece p);
+    Move(bitboard move, bitboard prev, Piece p, bitboard en_passant);
+    Move(bitboard move, bitboard prev, Piece p, Piece promote);
+    Move(bitboard move, bitboard prev, Piece p);
     Move() = default;
 
     void print_move();

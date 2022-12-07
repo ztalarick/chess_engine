@@ -5,28 +5,30 @@
 */
 
 #include <iostream>
-#include <string>
 
 #include "move.h"
 
 using namespace std;
 
-Move::Move(bitboard move, Piece p){
+Move::Move(bitboard move, bitboard prev, Piece p){
     this->move = move;
+    this->prev = prev;
     this->p = p;
     this->en_passant = false;
     this->promote = none;
 }
 
-Move::Move(bitboard move, Piece p, bitboard en_passant){
+Move::Move(bitboard move, bitboard prev, Piece p, bitboard en_passant){
     this->move = move;
+    this->prev = prev;
     this->p = p;
     this->en_passant = en_passant;
     this->promote = none;
 }
 
-Move::Move(bitboard move, Piece p, Piece promote){
+Move::Move(bitboard move, bitboard prev, Piece p, Piece promote){
   this->move = move;
+  this->prev = prev;
   this->p = p;
   this->promote = promote;
   this->en_passant = false;
@@ -34,7 +36,10 @@ Move::Move(bitboard move, Piece p, Piece promote){
 
 void Move::print_move(){
   cout << "move: " << move << endl;
-  cout << "piece: " << p << endl;
+  printBitboard(move);
+  cout << endl << "prev: " << prev << endl;
+  printBitboard(prev);
+  cout << endl << "piece: " << p << endl;
   cout << "promote: " << promote << endl;
   cout << "en_passant: " << en_passant << endl;
 }

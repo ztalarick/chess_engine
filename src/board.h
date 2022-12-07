@@ -12,10 +12,10 @@ class Board{
   public:
     //array of bitboards for each piece
     bitboard boards[12];
-    //tells whoose move it is
+    //tells whoose move it is 0=white 1=black
     Side to_move;
 
-    //these vars track the each kings ability to castle
+    //these vars track each kings ability to castle
     bool wk_castle; //white kingside
     bool wq_castle; //white queenside
     bool bk_castle; //black kingside
@@ -61,6 +61,10 @@ class Board{
     //update a board to undo the previous move
     void undo_move();
 
+    //checks if a position is valid
+    //  attacked_squares -> all the attacking squares of the opposite color.
+    bool is_valid(bitboard attacked_squares);
+
     //promote a pawn on the eigth rank to the given piece
     //pawn - the pawn type to be promoted
     //promotion - the type of new piece
@@ -70,11 +74,8 @@ class Board{
     //set en_passant to targetsq
     //must be called after make_move, otherwise it will get reset
     void set_en_passant(bitboard targetsq);
-
-    friend void test();
     
     //printing functions
-    void printBitboard(bitboard b);
     void printBoard();
 };
 

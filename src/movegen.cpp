@@ -50,35 +50,37 @@ void gen_king_moves(vector<Move> &moveList, const Board &pos, Piece p){
       
       if(no_ally_piece(ally_board, pos.boards[p] >> 1) &&
       !(pos.boards[p] & 72340172838076673ULL)) //not in h file
-        moveList.push_back(Move(pos.boards[p] >> 1, p)); //move 1 east
+        moveList.push_back(Move(pos.boards[p] >> 1, pos.boards[p], p)); //move 1 east
 
       if(no_ally_piece(ally_board, pos.boards[p] << 1) && 
         !(pos.boards[p] & 9259542123273814144ULL)) //check that the king is not on the A file
-        moveList.push_back(Move(pos.boards[p] << 1, p)); //move 1 west
+        moveList.push_back(Move(pos.boards[p] << 1, pos.boards[p], p)); //move 1 west
 
       if(no_ally_piece(ally_board, pos.boards[p] >> 8) &&
        !(pos.boards[p] & 255ULL)) //not on 1st rank
-        moveList.push_back(Move(pos.boards[p] >> 8, p)); //move 1 south
+        moveList.push_back(Move(pos.boards[p] >> 8, pos.boards[p], p)); //move 1 south
 
       if(no_ally_piece(ally_board, pos.boards[p] << 8) &&
        !(pos.boards[p] & 18374686479671623680ULL)) //not on 8th rank
-        moveList.push_back(Move(pos.boards[p] << 8, p)); //move 1 north
+        moveList.push_back(Move(pos.boards[p] << 8, pos.boards[p], p)); //move 1 north
 
       if(no_ally_piece(ally_board, pos.boards[p] << 7) &&
        !(pos.boards[p] & 18374969058471772417ULL)) //not in h file for 8th rank
-        moveList.push_back(Move(pos.boards[p] << 7, p)); //move 1 ne
+        moveList.push_back(Move(pos.boards[p] << 7, pos.boards[p], p)); //move 1 ne
 
       if(no_ally_piece(ally_board, pos.boards[p] << 9) &&
       !(pos.boards[p] & 18410856566090662016ULL)) //not in a file or 8th rank
-        moveList.push_back(Move(pos.boards[p] << 9, p)); //move 1 nw
+        moveList.push_back(Move(pos.boards[p] << 9, pos.boards[p], p)); //move 1 nw
 
       if(no_ally_piece(ally_board, pos.boards[p] >> 7) &&
       !(pos.boards[p] & 9259542123273814271ULL)) //not in a file or 1st rank
-        moveList.push_back(Move(pos.boards[p] >> 7, p)); //move 1 sw
+        moveList.push_back(Move(pos.boards[p] >> 7, pos.boards[p], p)); //move 1 sw
 
       if(no_ally_piece(ally_board, pos.boards[p] >> 9) &&
       !(pos.boards[p] & 72340172838076927ULL)) //not in h file or 1st rank
-        moveList.push_back(Move(pos.boards[p] >> 9, p)); //move 1 se
+        moveList.push_back(Move(pos.boards[p] >> 9, pos.boards[p], p)); //move 1 se
+      
+      //TODO: add castle
 }
 
 //function to generate and add all legal knight moves to the moveList
@@ -114,35 +116,35 @@ void gen_knight_moves(vector<Move> &moveList, const Board &pos, Piece p){
 
         bitboard curr_move = sep_knights.at(curr_kn) >> 6;
         if(no_ally_piece(ally_board, curr_move) && !(sep_knights.at(curr_kn) & 13889313184910721279ULL))
-          moveList.push_back(Move(combine_bits(sep_knights, curr_move, sep_knights.at(curr_kn)), p));
+          moveList.push_back(Move(curr_move, sep_knights.at(curr_kn), p));
 
         curr_move = sep_knights.at(curr_kn) << 6;
         if(no_ally_piece(ally_board, curr_move) && !(sep_knights.at(curr_kn) & 18375534216072069891ULL))
-          moveList.push_back(Move(combine_bits(sep_knights, curr_move, sep_knights.at(curr_kn)), p));
+          moveList.push_back(Move(curr_move, sep_knights.at(curr_kn), p));
 
         curr_move = sep_knights.at(curr_kn) >> 10;
         if(no_ally_piece(ally_board, curr_move) && !(sep_knights.at(curr_kn) & 217020518514230271ULL))
-          moveList.push_back(Move(combine_bits(sep_knights, curr_move, sep_knights.at(curr_kn)), p));
+          moveList.push_back(Move(curr_move, sep_knights.at(curr_kn), p));
 
         curr_move = sep_knights.at(curr_kn) << 10;
         if(no_ally_piece(ally_board, curr_move) && !(sep_knights.at(curr_kn) & 18428941609300181184ULL))
-          moveList.push_back(Move(combine_bits(sep_knights, curr_move, sep_knights.at(curr_kn)), p));
+          moveList.push_back(Move(curr_move, sep_knights.at(curr_kn), p));
 
         curr_move = sep_knights.at(curr_kn) >> 15;
         if(no_ally_piece(ally_board, curr_move) && !(sep_knights.at(curr_kn) & 9259542123273846783ULL))
-          moveList.push_back(Move(combine_bits(sep_knights, curr_move, sep_knights.at(curr_kn)), p));
+          moveList.push_back(Move(curr_move, sep_knights.at(curr_kn), p));
 
         curr_move = sep_knights.at(curr_kn) << 15;
         if(no_ally_piece(ally_board, curr_move) && !(sep_knights.at(curr_kn) & 18446463702556279041ULL))
-          moveList.push_back(Move(combine_bits(sep_knights, curr_move, sep_knights.at(curr_kn)), p));
+          moveList.push_back(Move(curr_move, sep_knights.at(curr_kn), p));
 
         curr_move = sep_knights.at(curr_kn) >> 17;
         if(no_ally_piece(ally_board, curr_move) && !(sep_knights.at(curr_kn) & 72340172838141951ULL))
-          moveList.push_back(Move(combine_bits(sep_knights, curr_move, sep_knights.at(curr_kn)), p));
+          moveList.push_back(Move(curr_move, sep_knights.at(curr_kn), p));
 
         curr_move = sep_knights.at(curr_kn) << 17;
         if(no_ally_piece(ally_board, curr_move) && !(sep_knights.at(curr_kn) & 18446603888132915328ULL))
-          moveList.push_back(Move(combine_bits(sep_knights, curr_move, sep_knights.at(curr_kn)), p));
+          moveList.push_back(Move(curr_move, sep_knights.at(curr_kn), p));
       } else{
         break; //if you reach an index with no knight you can stop the loop
       }
@@ -182,22 +184,21 @@ void gen_pawn_moves(vector<Move> &moveList, const Board &pos, Piece p){
           curr_move = sep_pawns.at(i) << 8; //single foward push
           //if there is no piece allied or oponent
           if(no_ally_piece(ally_board, curr_move) && no_ally_piece(opp_board, curr_move)){
-            bitboard new_pawns = combine_bits(sep_pawns, curr_move, sep_pawns.at(i));
             
             if(curr_move & 18374686479671623680ULL){ //promotion
-              moveList.push_back(Move(new_pawns, p, wqueen));
-              moveList.push_back(Move(new_pawns, p, wrook));
-              moveList.push_back(Move(new_pawns, p, wknight));
-              moveList.push_back(Move(new_pawns, p, wbishop));
+              moveList.push_back(Move(0, sep_pawns.at(i), p, wqueen));
+              moveList.push_back(Move(0, sep_pawns.at(i), p, wrook));
+              moveList.push_back(Move(0, sep_pawns.at(i), p, wknight));
+              moveList.push_back(Move(0, sep_pawns.at(i), p, wbishop));
             }else { //no promotion
-              moveList.push_back(Move(new_pawns, p));
+              moveList.push_back(Move(curr_move, sep_pawns.at(i), p));
             }
           }
             
           curr_move = sep_pawns.at(i) << 16; //double move
           if((sep_pawns.at(i) & 65280ULL) && no_ally_piece(ally_board, curr_move) //check on 2nd rank
           && no_ally_piece(opp_board, curr_move)){
-            moveList.push_back(Move(combine_bits(sep_pawns, curr_move, sep_pawns.at(i)), p, curr_move >> 8));
+            moveList.push_back(Move(curr_move, sep_pawns.at(i), p, curr_move >> 8));
           }
 
           curr_move = sep_pawns.at(i) << 9; //left capture
@@ -209,15 +210,14 @@ void gen_pawn_moves(vector<Move> &moveList, const Board &pos, Piece p){
           (!(no_ally_piece(pos.en_passant, curr_move)) //there is an en passant available
           && 
           !(sep_pawns.at(i) & 9259542123273814144ULL))){ //not on the A file
-            bitboard new_pawns = combine_bits(sep_pawns, curr_move, sep_pawns.at(i));
 
             if(curr_move & 18374686479671623680ULL){ //promotion
-              moveList.push_back(Move(new_pawns, p, wqueen));
-              moveList.push_back(Move(new_pawns, p, wrook));
-              moveList.push_back(Move(new_pawns, p, wknight));
-              moveList.push_back(Move(new_pawns, p, wbishop));
+              moveList.push_back(Move(curr_move, sep_pawns.at(i), p, wqueen));
+              moveList.push_back(Move(curr_move, sep_pawns.at(i), p, wrook));
+              moveList.push_back(Move(curr_move, sep_pawns.at(i), p, wknight));
+              moveList.push_back(Move(curr_move, sep_pawns.at(i), p, wbishop));
             }else { //no promotion
-              moveList.push_back(Move(new_pawns, p));
+              moveList.push_back(Move(curr_move, sep_pawns.at(i), p));
 
             }
           } 
@@ -227,15 +227,14 @@ void gen_pawn_moves(vector<Move> &moveList, const Board &pos, Piece p){
           && (!(no_ally_piece(opp_board, curr_move))))
           || ((!(no_ally_piece(pos.en_passant, curr_move))) 
           && !(sep_pawns.at(i) & 72340172838076673ULL))){ //not on the H file
-            bitboard new_pawns = combine_bits(sep_pawns, curr_move, sep_pawns.at(i));
 
             if(curr_move & 18374686479671623680ULL){ //promotion
-              moveList.push_back(Move(new_pawns, p, wqueen));
-              moveList.push_back(Move(new_pawns, p, wrook));
-              moveList.push_back(Move(new_pawns, p, wknight));
-              moveList.push_back(Move(new_pawns, p, wbishop));
+              moveList.push_back(Move(0, sep_pawns.at(i), p, wqueen));
+              moveList.push_back(Move(0, sep_pawns.at(i), p, wrook));
+              moveList.push_back(Move(0, sep_pawns.at(i), p, wknight));
+              moveList.push_back(Move(0, sep_pawns.at(i), p, wbishop));
             }else { //no promotion
-              moveList.push_back(Move(new_pawns, p));
+              moveList.push_back(Move(curr_move, sep_pawns.at(i), p));
             }
           } 
         }
@@ -246,22 +245,21 @@ void gen_pawn_moves(vector<Move> &moveList, const Board &pos, Piece p){
           curr_move = sep_pawns.at(i) >> 8; //single foward push
           //if there is no piece allied or oponent
           if(no_ally_piece(ally_board, curr_move) && no_ally_piece(opp_board, curr_move)){
-            bitboard new_pawns = combine_bits(sep_pawns, curr_move, sep_pawns.at(i));
             
             if(curr_move & 255ULL){ //promotion
-              moveList.push_back(Move(new_pawns, p, bqueen));
-              moveList.push_back(Move(new_pawns, p, brook));
-              moveList.push_back(Move(new_pawns, p, bknight));
-              moveList.push_back(Move(new_pawns, p, bbishop));
+              moveList.push_back(Move(0, sep_pawns.at(i), p, bqueen));
+              moveList.push_back(Move(0, sep_pawns.at(i), p, brook));
+              moveList.push_back(Move(0, sep_pawns.at(i), p, bknight));
+              moveList.push_back(Move(0, sep_pawns.at(i), p, bbishop));
             }else { //no promotion
-              moveList.push_back(Move(new_pawns, p));
+              moveList.push_back(Move(curr_move, sep_pawns.at(i), p));
             }
           }
             
           curr_move = sep_pawns.at(i) >> 16; //double move
           if((sep_pawns.at(i) & 71776119061217280ULL) && no_ally_piece(ally_board, curr_move) //check on 2nd rank
           && no_ally_piece(opp_board, curr_move)){
-            moveList.push_back(Move(combine_bits(sep_pawns, curr_move, sep_pawns.at(i)), p, curr_move << 8));
+            moveList.push_back(Move(curr_move, sep_pawns.at(i), p, curr_move << 8));
           }
 
           curr_move = sep_pawns.at(i) >> 9; //left capture
@@ -269,15 +267,14 @@ void gen_pawn_moves(vector<Move> &moveList, const Board &pos, Piece p){
           && (!(no_ally_piece(opp_board, curr_move))))//there is an opponent piece on the targeted square
           || (!(no_ally_piece(pos.en_passant, curr_move)) //there is an en passant available
           && !(sep_pawns.at(i) & 72340172838076673ULL))){ //not on the H file
-            bitboard new_pawns = combine_bits(sep_pawns, curr_move, sep_pawns.at(i));
 
             if(curr_move & 255ULL){ //promotion
-              moveList.push_back(Move(new_pawns, p, bqueen));
-              moveList.push_back(Move(new_pawns, p, brook));
-              moveList.push_back(Move(new_pawns, p, bknight));
-              moveList.push_back(Move(new_pawns, p, bbishop));
+              moveList.push_back(Move(0, sep_pawns.at(i), p, bqueen));
+              moveList.push_back(Move(0, sep_pawns.at(i), p, brook));
+              moveList.push_back(Move(0, sep_pawns.at(i), p, bknight));
+              moveList.push_back(Move(0, sep_pawns.at(i), p, bbishop));
             }else { //no promotion
-              moveList.push_back(Move(new_pawns, p));
+              moveList.push_back(Move(curr_move, sep_pawns.at(i), p));
             }
           } 
           
@@ -288,15 +285,14 @@ void gen_pawn_moves(vector<Move> &moveList, const Board &pos, Piece p){
           && (!(no_ally_piece(opp_board, curr_move))))
           || ((!(no_ally_piece(pos.en_passant, curr_move))) 
           && !(sep_pawns.at(i) & 9259542123273814144ULL))){ //not on the A file
-            bitboard new_pawns = combine_bits(sep_pawns, curr_move, sep_pawns.at(i));
 
             if(curr_move & 255ULL){ //promotion
-              moveList.push_back(Move(new_pawns, p, bqueen));
-              moveList.push_back(Move(new_pawns, p, brook));
-              moveList.push_back(Move(new_pawns, p, bknight));
-              moveList.push_back(Move(new_pawns, p, bbishop));
+              moveList.push_back(Move(0, sep_pawns.at(i), p, bqueen));
+              moveList.push_back(Move(0, sep_pawns.at(i), p, brook));
+              moveList.push_back(Move(0, sep_pawns.at(i), p, bknight));
+              moveList.push_back(Move(0, sep_pawns.at(i), p, bbishop));
             }else { //no promotion
-              moveList.push_back(Move(new_pawns, p));
+              moveList.push_back(Move(curr_move, sep_pawns.at(i), p));
             }
           }       
       }
@@ -324,6 +320,7 @@ void gen_rook_moves(vector<Move> &moveList, const Board &pos, Piece p){
     }
 
     // << 8
+    bitboard old = sep_rooks[curr_rk];
     curr_move = sep_rooks[curr_rk] << 8;
     if(curr_move != 0){
       for(int up = 0; up < 8; up++){
@@ -334,7 +331,7 @@ void gen_rook_moves(vector<Move> &moveList, const Board &pos, Piece p){
           break; //stop sliding in this direction
         }
         //add the capture to the moveList
-        moveList.push_back(Move(combine_bits(sep_rooks, curr_move, sep_rooks.at(curr_rk)), p));
+        moveList.push_back(Move(curr_move, old, p));
 
         if(!no_ally_piece(opp_board, curr_move) //there is an opponent piece
         || (curr_move & 18374686479671623680ULL)){ //on the 8th rank
@@ -355,7 +352,7 @@ void gen_rook_moves(vector<Move> &moveList, const Board &pos, Piece p){
           break; //stop sliding in this direction
         }
         //add the capture to the moveList
-        moveList.push_back(Move(combine_bits(sep_rooks, curr_move, sep_rooks.at(curr_rk)), p));
+        moveList.push_back(Move(curr_move, old, p));
 
         if(!no_ally_piece(opp_board, curr_move)  //there is an opponent piece
         || (curr_move & 255ULL)){                 //on the first rank
@@ -377,7 +374,7 @@ void gen_rook_moves(vector<Move> &moveList, const Board &pos, Piece p){
           break; //stop sliding in this direction
         }
         //add the capture to the moveList
-        moveList.push_back(Move(combine_bits(sep_rooks, curr_move, sep_rooks.at(curr_rk)), p));
+        moveList.push_back(Move(curr_move, old, p));
 
         if(!no_ally_piece(opp_board, curr_move)
         || (curr_move & 72340172838076673ULL)){ //there is an opponent piece
@@ -398,7 +395,7 @@ void gen_rook_moves(vector<Move> &moveList, const Board &pos, Piece p){
           break; //stop sliding in this direction
         }
         //add the capture to the moveList
-        moveList.push_back(Move(combine_bits(sep_rooks, curr_move, sep_rooks.at(curr_rk)), p));
+        moveList.push_back(Move(curr_move, old, p));
 
         if(!no_ally_piece(opp_board, curr_move)
         || (curr_move & 9259542123273814144ULL)){ //there is an opponent piece
@@ -430,6 +427,7 @@ void gen_bishop_moves(vector<Move> &moveList, const Board &pos, Piece p){
     }
 
     // << 9 - NW
+    bitboard old = sep_bishops[curr_bshp];
     curr_move = sep_bishops[curr_bshp] << 9;
     if(curr_move != 0){
       for(int nw = 0; nw < 8; nw++){
@@ -440,7 +438,7 @@ void gen_bishop_moves(vector<Move> &moveList, const Board &pos, Piece p){
           break; //stop sliding in this direction
         }
         //add the capture to the moveList
-        moveList.push_back(Move(combine_bits(sep_bishops, curr_move, sep_bishops.at(curr_bshp)), p));
+        moveList.push_back(Move(curr_move, old, p));
 
         if(!no_ally_piece(opp_board, curr_move) //there is an opponent piece
         || (curr_move & 18374686479671623680ULL) || (curr_move & 9259542123273814144ULL)){ //on the 8th rank or A file
@@ -461,7 +459,7 @@ void gen_bishop_moves(vector<Move> &moveList, const Board &pos, Piece p){
           break; //stop sliding in this direction
         }
         //add the capture to the moveList
-        moveList.push_back(Move(combine_bits(sep_bishops, curr_move, sep_bishops.at(curr_bshp)), p));
+        moveList.push_back(Move(curr_move, old, p));
 
         if(!no_ally_piece(opp_board, curr_move)  //there is an opponent piece
         || (curr_move & 255ULL) || (curr_move & 72340172838076673ULL)){ //on the first rank or in H file
@@ -483,7 +481,7 @@ void gen_bishop_moves(vector<Move> &moveList, const Board &pos, Piece p){
           break; //stop sliding in this direction
         }
         //add the capture to the moveList
-        moveList.push_back(Move(combine_bits(sep_bishops, curr_move, sep_bishops.at(curr_bshp)), p));
+        moveList.push_back(Move(curr_move, old, p));
 
         if(!no_ally_piece(opp_board, curr_move) //there is an opponent piece
         || (curr_move & 9259542123273814144ULL) || (curr_move & 255ULL)){  //on the first rank or in A file
@@ -504,7 +502,7 @@ void gen_bishop_moves(vector<Move> &moveList, const Board &pos, Piece p){
           break; //stop sliding in this direction
         }
         //add the capture to the moveList
-        moveList.push_back(Move(combine_bits(sep_bishops, curr_move, sep_bishops.at(curr_bshp)), p));
+        moveList.push_back(Move(curr_move, old, p));
 
         if(!no_ally_piece(opp_board, curr_move) //there is an opponent piece
         || (curr_move & 18374969058471772417ULL)){ // on the eigth rank or h file
@@ -545,17 +543,97 @@ bitboard combine_bits(vector<bitboard> &bits, bitboard move, bitboard old_piece)
   return move;
 }
 
-//TODO do this function, maybe by calling generate moves?
-// bitboard gen_attacked_squares(Board pos, Side s){
-//   bitboard attacked_squares = 0;
-//   //First calculate the indices of the bitboard array
-//   int i = s ? 6 : 0;
-//   int max = s ? 12 : 6;
-//   for(i; i < max; i++){
-//     bitboard cur = pos.boards[i];
-//     if (cur == 0){ //King
-      
-//     }
-//   }
-//   return 0;
-// }
+void print_moveList2(vector<Move> &moveList){
+    int num_moves = 0;
+    cout << endl << "Move List: " << endl;
+    for(Move m: moveList){
+        cout << endl;
+        m.print_move();
+        cout << endl;
+        num_moves++;
+    }
+    cout << "Number of moves generated: " << num_moves << endl << endl; 
+}
+
+
+bitboard gen_attacked_squares(Board pos){
+  cout << endl << endl << "inside gen attacked squares" << endl;
+  //get opposite side 
+  Side s = pos.to_move ? white : black;
+  cout << "side to move: " << (pos.to_move ? "w;hite" : "black") << endl;
+  bitboard attacked_squares = 0;
+  vector<Move> moveList;
+
+  //remove the oposing king from the movegen to catch the case of moving away from sliding checks
+  Piece k = s ? wking : bking;
+  bitboard prev_king = pos.boards[k];
+  pos.boards[k] = 0;
+  pos.to_move = s;
+
+  //we cannot just call movegen because we only want attacking pawn moves
+  cout << endl << "Begin pawn loop" << endl;
+  //handle pawns
+  Piece pawns = s ? bpawn : wpawn;
+  vector<bitboard> all_pawns(8);
+  separate_bits(all_pawns, pos.boards[wpawn]);
+  for(int curr_pawn = 0; curr_pawn < 8; curr_pawn++){
+    if(!all_pawns.at(curr_pawn)){ //if there is no pawn at the current index
+      break;
+    }
+    if(s == wpawn){
+      std::cout << "first if" << endl;
+      if(!(all_pawns.at(curr_pawn) & 72340172838076673ULL)){ //not h file
+        attacked_squares = attacked_squares | (all_pawns.at(curr_pawn) << 7);
+      }
+      if(!(all_pawns.at(curr_pawn) & 9259542123273814144ULL)){ //not a file
+        attacked_squares = attacked_squares | (all_pawns.at(curr_pawn) << 9);
+      }
+    }else if (s == bpawn){
+      std::cout << "second if" << endl;
+      if(!(all_pawns.at(curr_pawn) & 72340172838076673ULL)){ //not h file
+        attacked_squares = attacked_squares | (all_pawns.at(curr_pawn) >> 9);
+      }
+      if(!(all_pawns.at(curr_pawn) & 9259542123273814144ULL)){ //not a file
+        attacked_squares = attacked_squares | (all_pawns.at(curr_pawn) >> 7);
+      }
+    }
+  }
+  //build moveList from individual piece functions
+  //we must remove allied pieces for knights
+
+  //iterate through moveList and combine attacked squares
+  for(Move m : moveList){
+    std::cout << "____________________ start _______________________" << endl;
+    m.print_move();
+    attacked_squares = attacked_squares | m.move;
+    cout << "attacked squares: " << attacked_squares << endl;
+    cout << "____________________ end _______________________" << endl;
+
+  }
+  cout << endl << endl;
+  return attacked_squares;
+}
+
+void gen_promotion(vector<Move> &moveList, Board &pos, Move m, bitboard prev_king){
+  if(m.promote == none || m.move == prev_king){
+    return;
+  }
+  pos.promote(m.p, m.promote, m.move);
+  //would be way cooler to make this a map but the syntax in c++ is awful
+  if(m.promote == wqueen || m.promote == bqueen){
+    gen_rook_moves(moveList, pos, m.promote);
+    gen_bishop_moves(moveList, pos, m.promote);
+  }
+
+  if(m.promote == wbishop || m.promote == bbishop){
+    gen_bishop_moves(moveList, pos, m.promote);
+  }
+
+  if(m.promote == wrook || m.promote == brook){
+    gen_rook_moves(moveList, pos, m.promote);
+  }
+
+  if(m.promote == wknight || m.promote == bknight){
+    gen_knight_moves(moveList, pos, m.promote);
+  }
+}

@@ -4,18 +4,18 @@
   Tests for the movegen.cpp file
 */
 
-// g++ -std=c++17 -o test_movegen.exe test_movegen.cpp ../src/board.cpp ../src/movegen.cpp ../src/move.cpp
-// g++ -std=c++17 -o test_movegen.o test_movegen.cpp ../src/board.cpp ../src/movegen.cpp ../src/move.cpp
+// g++ -std=c++17 -o test_movegen.exe test_movegen.cpp ../src/board.cpp ../src/movegen.cpp ../src/move.cpp ../src/utils.cpp
+// g++ -std=c++17 -o test_movegen.o test_movegen.cpp ../src/board.cpp ../src/movegen.cpp ../src/move.cpp ../src/utils.cpp
 
 
 
 #include <iostream>
 #include <vector>
+#include <chrono>
 
 #include "../src/board.h"
 #include "../src/movegen.h"
 #include "../src/utils.h"
-
 
 using namespace std;
 
@@ -292,6 +292,18 @@ void test_gen_queen_moves(){
     
 }
 
+void test_gen_attacked_squares(){
+    vector<Move> moveList;
+    Board starting_white_pos = Board("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1");
+
+
+    cout << "Begin test for gen_attacked_squares: " << endl;
+    bitboard as = gen_attacked_squares(starting_white_pos);
+
+    cout << as << endl;
+    printBitboard(as);
+}
+
 void test_starting(){
     vector<Move> moveList;
     Board starting_white_pos = Board("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1");
@@ -343,16 +355,19 @@ void test_movegen(){
 }
 
 
-int perft(int depth, Board posistion){
+int perft(int depth, Board position){
     vector<Move> moveList;
     bitboard nodes = 0;
     if(depth == 0)
         return 1;
-    movegen(moveList, posistion);
+    movegen(moveList, position); 
+    bitboard attacked_squares = gen_attacked_squares(position); 
     for(Move m : moveList){
-        posistion.make_move(m);
-        nodes += perft(depth - 1, posistion);
-        posistion.undo_move();
+        position.make_move(m); 
+        if(position.is_valid(attacked_squares)){ 
+            nodes += perft(depth - 1, position);
+        }
+        position.undo_move();
 
     }
     return nodes;
@@ -367,11 +382,16 @@ int main(){
     // test_gen_queen_moves();
     // test_movegen();
     // test_starting();
+    test_gen_attacked_squares();
 
+    // cout << endl << "PERFT" << endl;
+    // Board pos = Board("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1");
+    // auto start_time = std::chrono::high_resolution_clock::now();
+    // int count = perft(3, pos);
+    // auto end_time = std::chrono::high_resolution_clock::now();
+    // cout << "Nodes: " << count << endl;    
 
-    cout << endl << "PERFT" << endl;
-    Board starting_white_pos = Board("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1");
-    int count = perft(3, starting_white_pos);
-    cout << "Count: " << count << endl;    
+    // auto time = end_time - start_time;
+    // cout << "Time taken: " << time/std::chrono::milliseconds(1) << "ms" << endl;
 
 }

@@ -33,7 +33,14 @@ void separate_bits(std::vector<bitboard> &bits, bitboard board);
 bitboard combine_bits(std::vector<bitboard> &bits, bitboard move, bitboard old_piece);
 
 //generates attaked squares
-bitboard gen_attacked_squares(Board pos, Side side);
+//  pos - position you want the attacked squares of the opposite of toMove
+bitboard gen_attacked_squares(Board pos);
+
+//given a promotion move, add to the moveList
+// for use in gen_attacked squares simulating make_move
+//  moveList the movelist you want the promotions in
+//  
+void gen_promotion(std::vector<Move> &moveList, Board &pos, Move m, bitboard prev_king);
 
 //functions to generate and add all legal moves to the moveList by piece
 //moveList - a vector of board positions that contain the boardstate after a move, passed by reference
