@@ -10,7 +10,10 @@
 // return - the length of moveList
 // pos - the start position
 // moveList - vector containing the moves, passed by reference
-int movegen(std::vector<Move> &moveList, Board pos);
+// include_allied_squares - bool indicating to include allied squares in the move generation
+//      true -> gen_attacking_moves
+//      false -> normal way 
+int movegen(std::vector<Move> &moveList, Board pos, bool include_allied_squares);
 
 //checks if an ally piece exists in the square you want to move too
 // ally_pieces - a bitboard with a bitset for all allied pieces
@@ -46,10 +49,15 @@ void gen_promotion(std::vector<Move> &moveList, Board &pos, Move m, bitboard pre
 //moveList - a vector of board positions that contain the boardstate after a move, passed by reference
 //pos - current position you want to generate moves for, passed by reference
 //p - the piece you want to generate for
-void gen_king_moves(std::vector<Move> &moveList, const Board &pos, Piece p);
-void gen_knight_moves(std::vector<Move> &moveList, const Board &pos, Piece p);
 void gen_pawn_moves(std::vector<Move> &moveList, const Board &pos, Piece p);
-void gen_rook_moves(std::vector<Move> &moveList, const Board &pos, Piece p);
-void gen_bishop_moves(std::vector<Move> &moveList, const Board &pos, Piece p);
+
+//special case for these functions
+//include_allied_squares - boolean indicating if we want to include squares that contain allied pieces in move generation
+//  true -> for gen_attacking_moves
+//  false -> for move_gen
+void gen_knight_moves(std::vector<Move> &moveList, const Board &pos, Piece p, bool include_allied_squares);
+void gen_rook_moves(std::vector<Move> &moveList, const Board &pos, Piece p, bool include_allied_squares);
+void gen_bishop_moves(std::vector<Move> &moveList, const Board &pos, Piece p, bool include_allied_squares);
+void gen_king_moves(std::vector<Move> &moveList, const Board &pos, Piece p, bool include_allied_squares);
 
 #endif

@@ -48,7 +48,7 @@ void test_gen_king_moves(){
     // only a king on d4
     Board solo_king = Board("8/8/8/8/3K4/8/8/8 w - - 0 1");
     cout << "Test 1 - King on d4: " << endl << endl;
-    gen_king_moves(moveList, solo_king, wking);
+    gen_king_moves(moveList, solo_king, wking, false);
     print_moveList(moveList);
 
     moveList.clear();
@@ -56,7 +56,7 @@ void test_gen_king_moves(){
     // king on d4 surrounded by pawns
     Board ally_pieces = Board("8/8/8/2PPP3/2PKP3/2PPP3/8/8 w - - 0 1");
     cout << endl << "Test 2 - King on d4 surrounded by allied pawns: " << endl << endl;
-    gen_king_moves(moveList, ally_pieces, wking);
+    gen_king_moves(moveList, ally_pieces, wking, false);
     print_moveList(moveList);
 
     moveList.clear();
@@ -64,7 +64,7 @@ void test_gen_king_moves(){
     // king on A1
     Board king_a1 = Board("8/8/8/8/8/8/8/K7 w - - 0 1");
     cout << endl << "Test 3 - King on a1: " << endl << endl;
-    gen_king_moves(moveList, king_a1, wking);
+    gen_king_moves(moveList, king_a1, wking, false);
     print_moveList(moveList);
 
     moveList.clear();
@@ -72,7 +72,7 @@ void test_gen_king_moves(){
     //King on A8 
     Board king_a8 = Board("K7/8/8/8/8/8/8/8 w - - 0 1");
     cout << endl << "Test 4 - King on a8: " << endl << endl;
-    gen_king_moves(moveList, king_a8, wking);
+    gen_king_moves(moveList, king_a8, wking, false);
     print_moveList(moveList);
 
     moveList.clear();
@@ -80,7 +80,7 @@ void test_gen_king_moves(){
     //King on h8
     Board king_h8 = Board("7K/8/8/8/8/8/8/8 w - - 0 1");
     cout << endl << "Test 5 - King on h8: " << endl << endl;
-    gen_king_moves(moveList, king_h8, wking);
+    gen_king_moves(moveList, king_h8, wking, false);
     print_moveList(moveList);
 
     moveList.clear();
@@ -88,7 +88,7 @@ void test_gen_king_moves(){
     //King on h1
     Board king_h1 = Board("8/8/8/8/8/8/8/7K w - - 0 1");
     cout << endl << "Test 6 - King on h1: " << endl << endl;
-    gen_king_moves(moveList, king_h1, wking);
+    gen_king_moves(moveList, king_h1, wking, false);
     print_moveList(moveList);
 
     moveList.clear();
@@ -96,7 +96,7 @@ void test_gen_king_moves(){
     //Black king on d4
     Board bking_d4 = Board("8/8/8/8/3k4/8/8/8 b - - 0 1");
     cout << endl << "Test 7 - Black King on d4: " << endl << endl;
-    gen_king_moves(moveList, bking_d4, bking);
+    gen_king_moves(moveList, bking_d4, bking, false);
     print_moveList(moveList);
 
     moveList.clear();
@@ -111,7 +111,7 @@ void test_gen_knight_moves(){
     //knight on d4
     cout << "Test 1 - Knight on d4: " << endl;
     Board knight_d4 = Board("8/8/8/8/3N4/8/8/8 w - - 0 1");
-    gen_knight_moves(moveList, knight_d4, wknight);   
+    gen_knight_moves(moveList, knight_d4, wknight, false);   
     print_moveList(moveList);
 
     moveList.clear();
@@ -119,7 +119,7 @@ void test_gen_knight_moves(){
     //knight on d4 and e4
     cout << "Test 2 - Knight on d4 and e4: " << endl;
     Board knight_d4_e4 = Board("8/8/8/8/3NN3/8/8/8 w - - 0 1");
-    gen_knight_moves(moveList, knight_d4_e4, wknight);
+    gen_knight_moves(moveList, knight_d4_e4, wknight, false);
     print_moveList(moveList);
 
     moveList.clear();
@@ -127,7 +127,7 @@ void test_gen_knight_moves(){
     //knight on d4, allied pawns on all target squares
     cout << "Test 3 - Knight on d4, allied pawns on all target squares: " << endl;
     Board knight_d4_allied_pawns = Board("8/8/2P1P3/1P3P2/3N4/1P3P2/2P1P3/8 w - - 0 1");
-    gen_knight_moves(moveList, knight_d4_allied_pawns, wknight);
+    gen_knight_moves(moveList, knight_d4_allied_pawns, wknight, false);
     print_moveList(moveList);
 
     moveList.clear();
@@ -135,14 +135,14 @@ void test_gen_knight_moves(){
     //knights in all 4 corners
     cout << "Test 4 - Knight on all 4 corners: " << endl;
     Board knight_4corners = Board("N6N/8/8/8/8/8/8/N6N w - - 0 1");
-    gen_knight_moves(moveList, knight_4corners, wknight);
+    gen_knight_moves(moveList, knight_4corners, wknight, false);
     print_moveList(moveList);
 
     moveList.clear();
 
     cout << "Test 5 - Knight on d4, blocked by allied pawns except for capture" << endl;
     Board knight_d4_capture = Board("8/8/2P1P3/1P3p2/3N4/1P3P2/2P1P3/8 w - - 0 1");
-    gen_knight_moves(moveList, knight_d4_capture, wknight);
+    gen_knight_moves(moveList, knight_d4_capture, wknight, false);
     print_moveList(moveList);
 
     moveList.clear();
@@ -223,42 +223,42 @@ void test_gen_rook_moves(){
 
     cout << "Test 1 rook on d4" << endl;
     Board rook_d4 = Board("8/8/8/8/3R4/8/8/8 w - - 0 1");
-    gen_rook_moves(moveList, rook_d4, wrook);   
+    gen_rook_moves(moveList, rook_d4, wrook, false);   
     print_moveList(moveList);
 
     moveList.clear();
 
     cout << "Test 2 black rook on d4" << endl;
     Board black_rook_d4 = Board("8/8/8/8/3r4/8/8/8 b - - 0 1");
-    gen_rook_moves(moveList, black_rook_d4, brook);   
+    gen_rook_moves(moveList, black_rook_d4, brook, false);   
     print_moveList(moveList);
 
     moveList.clear();
 
     cout << "Test 3: rook on d1" << endl;
     Board rook_d1 = Board("8/8/8/8/8/8/8/3R4 w - - 0 1");
-    gen_rook_moves(moveList, rook_d1, wrook);
+    gen_rook_moves(moveList, rook_d1, wrook, false);
     print_moveList(moveList);
 
     moveList.clear();
 
     cout << "Test 4: rook on d4 and allied pawn on d5" << endl;
     Board rook_d4_pawn = Board("8/8/8/3P4/3R4/8/8/8 w - - 0 1");
-    gen_rook_moves(moveList, rook_d4_pawn, wrook);
+    gen_rook_moves(moveList, rook_d4_pawn, wrook, false);
     print_moveList(moveList);
 
     moveList.clear();
 
     cout << "Test 5: white rook on d4 and black pawn on d5" << endl;
     Board rook_d4_black_pawn = Board("8/8/8/3p4/3R4/8/8/8 w - - 0 1");
-    gen_rook_moves(moveList, rook_d4_black_pawn, wrook);
+    gen_rook_moves(moveList, rook_d4_black_pawn, wrook, false);
     print_moveList(moveList);
 
     moveList.clear();
 
     cout << "Test 6: multiple rooks" << endl;
     Board rook_d4_e5 = Board("8/8/8/4R3/3R4/8/8/8 w - - 0 1");
-    gen_rook_moves(moveList, rook_d4_e5, wrook);
+    gen_rook_moves(moveList, rook_d4_e5, wrook, false);
     print_moveList(moveList);
 
     moveList.clear();
@@ -271,7 +271,7 @@ void test_gen_bishop_moves(){
 
     cout << "Test 1 bishop on d4" << endl;
     Board bishop_d4 = Board("8/8/8/8/3B4/8/8/8 w - - 0 1");
-    gen_bishop_moves(moveList, bishop_d4, wbishop);   
+    gen_bishop_moves(moveList, bishop_d4, wbishop, false);   
     print_moveList(moveList);
 
     moveList.clear();
@@ -284,8 +284,8 @@ void test_gen_queen_moves(){
 
     cout << "Test 1 queen on d4" << endl;
     Board queen_d4 = Board("8/8/8/8/3Q4/8/8/8 w - - 0 1");
-    gen_rook_moves(moveList, queen_d4, wqueen);   
-    gen_bishop_moves(moveList, queen_d4, wqueen);   
+    gen_rook_moves(moveList, queen_d4, wqueen, false);   
+    gen_bishop_moves(moveList, queen_d4, wqueen, false);   
     print_moveList(moveList);
 
     moveList.clear();
@@ -294,6 +294,7 @@ void test_gen_queen_moves(){
 
 void test_gen_attacked_squares(){
     vector<Move> moveList;
+    // Board starting_white_pos = Board("3r2k1/8/8/8/8/3P4/8/3K4 w - - 0 1");
     Board starting_white_pos = Board("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1");
 
 
@@ -309,28 +310,28 @@ void test_starting(){
     Board starting_white_pos = Board("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1");
 
     cout << "King" << endl;
-    gen_king_moves(moveList, starting_white_pos, wking);
+    gen_king_moves(moveList, starting_white_pos, wking, false);
     print_moveList(moveList);
     moveList.clear();
 
     cout << "Queen" << endl;
-    gen_rook_moves(moveList, starting_white_pos, wqueen);
-    gen_bishop_moves(moveList, starting_white_pos, wqueen);
+    gen_rook_moves(moveList, starting_white_pos, wqueen, false);
+    gen_bishop_moves(moveList, starting_white_pos, wqueen, false);
     print_moveList(moveList);
     moveList.clear();
 
     cout << "Rook" << endl;
-    gen_rook_moves(moveList, starting_white_pos, wrook);
+    gen_rook_moves(moveList, starting_white_pos, wrook, false);
     print_moveList(moveList);
     moveList.clear();
 
     cout << "Bishop" << endl;
-    gen_bishop_moves(moveList, starting_white_pos, wbishop);
+    gen_bishop_moves(moveList, starting_white_pos, wbishop, false);
     print_moveList(moveList);
     moveList.clear();
 
     cout << "Knight" << endl;
-    gen_knight_moves(moveList, starting_white_pos, wknight);
+    gen_knight_moves(moveList, starting_white_pos, wknight, false);
     print_moveList(moveList);
     moveList.clear();
 
@@ -346,7 +347,7 @@ void test_movegen(){
 
     cout << "Test d4 e5 position" << endl;
     Board starting_white_pos = Board("rnbqkbnr/pppp1ppp/8/4p3/3P4/8/PPP1PPPP/RKBQKBNR w KQkq - 0 1");
-    movegen(moveList, starting_white_pos);  
+    movegen(moveList, starting_white_pos, true);  
     // print_moveList(moveList);
     print_black_white_pieces(moveList);
     cout << moveList.size() << endl;
@@ -358,17 +359,18 @@ void test_movegen(){
 int perft(int depth, Board position){
     vector<Move> moveList;
     bitboard nodes = 0;
+
     if(depth == 0)
         return 1;
-    movegen(moveList, position); 
-    bitboard attacked_squares = gen_attacked_squares(position); 
+    movegen(moveList, position, false); 
+    bitboard attacked_squares = gen_attacked_squares(position);
+
     for(Move m : moveList){
         position.make_move(m); 
         if(position.is_valid(attacked_squares)){ 
-            nodes += perft(depth - 1, position);
+            nodes += perft(depth - 1, Board(position));
         }
         position.undo_move();
-
     }
     return nodes;
 }
@@ -382,16 +384,17 @@ int main(){
     // test_gen_queen_moves();
     // test_movegen();
     // test_starting();
-    test_gen_attacked_squares();
 
-    // cout << endl << "PERFT" << endl;
-    // Board pos = Board("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1");
-    // auto start_time = std::chrono::high_resolution_clock::now();
-    // int count = perft(3, pos);
-    // auto end_time = std::chrono::high_resolution_clock::now();
-    // cout << "Nodes: " << count << endl;    
+    // test_gen_attacked_squares();
 
-    // auto time = end_time - start_time;
-    // cout << "Time taken: " << time/std::chrono::milliseconds(1) << "ms" << endl;
+    cout << endl << "PERFT" << endl;
+    Board pos = Board("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1");
+    auto start_time = std::chrono::high_resolution_clock::now();
+    int count = perft(3, pos);
+    auto end_time = std::chrono::high_resolution_clock::now();
+    cout << "Nodes: " << count << endl;    
+
+    auto time = end_time - start_time;
+    cout << "Time taken: " << time/std::chrono::milliseconds(1) << "ms" << endl;
 
 }

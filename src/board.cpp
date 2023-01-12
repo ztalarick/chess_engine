@@ -150,10 +150,9 @@ Board::Board(string fen){
 
 void Board::make_move(Move m){
   //create a copy of the current position before the move
-  static Board prev = Board(this); //TODO - explore performance of putting this on the heap instead of being static
+  Board* prev = new Board(this);
   //add to stack
-  game.push(&prev);
-
+  game.push(prev);
   boards[m.p] = (m.move | m.prev) ^ boards[m.p];
 
   //handling promotion
@@ -222,6 +221,7 @@ bool Board::is_valid(bitboard attacked_squares){
   //this is called right after the move is made.
   //if the king is not attacked -> return true
 
+
   bitboard king = this->to_move ? boards[wking] : boards[bking];
   return !(king & attacked_squares);
 }
@@ -240,6 +240,8 @@ void Board::undo_move(){
   en_passant = prev->en_passant;
   half_clock = prev->half_clock;
   full_count = prev->full_count;
+
+  delete prev;
   return;
 }
 
