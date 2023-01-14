@@ -220,9 +220,8 @@ bool Board::is_valid(bitboard attacked_squares){
   //attacked_squares is white attacks if to_move is white and vice versa
   //this is called right after the move is made.
   //if the king is not attacked -> return true
-
-
-  bitboard king = this->to_move ? boards[wking] : boards[bking];
+  
+  bitboard king = this->to_move ? boards[bking] : boards[wking];
   return !(king & attacked_squares);
 }
 

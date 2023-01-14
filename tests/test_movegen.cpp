@@ -269,8 +269,14 @@ void test_gen_bishop_moves(){
 
     cout << "Test for gen_bishop_moves: " << endl;
 
-    cout << "Test 1 bishop on d4" << endl;
-    Board bishop_d4 = Board("8/8/8/8/3B4/8/8/8 w - - 0 1");
+    // cout << "Test 1 bishop on d4" << endl;
+    // Board bishop_d4 = Board("8/8/8/8/3B4/8/8/8 w - - 0 1");
+    // gen_bishop_moves(moveList, bishop_d4, wbishop, false);   
+    // print_moveList(moveList);
+    // moveList.clear();
+
+    cout << "1 bishop on A3" << endl;
+    Board bishop_d4 = Board("8/8/8/8/8/B7/8/8 w - - 0 1");
     gen_bishop_moves(moveList, bishop_d4, wbishop, false);   
     print_moveList(moveList);
 
@@ -355,6 +361,36 @@ void test_movegen(){
     moveList.clear();
 }
 
+void test_is_valid_check(){
+    Board start_pos = Board("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1");
+    Move m = Move(134217728ULL, 2048ULL, wpawn); // 1. e4
+    Move m2 = Move(1125899906842624ULL, 17179869184ULL, bpawn); // 1. e4 f5
+    Move m3 = Move(16, 4294967296UL, wqueen);
+
+    start_pos.make_move(m);
+    start_pos.make_move(m2);
+    start_pos.make_move(m3);
+
+    // start_pos.printBoard();
+
+    cout << "Result: " << start_pos.is_valid(gen_attacked_squares(start_pos)) << endl;
+}
+
+void test_is_valid(){
+    Board start_pos = Board("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1");
+    Move m = Move(16384, 4194304, wpawn); // 1. b3
+    Move m2 = Move(1125899906842624ULL, 4398046511104ULL, bpawn); // 1. b3 f6
+    Move m3 = Move(32, 8388608, wbishop);
+
+    start_pos.make_move(m);
+    start_pos.make_move(m2);
+    start_pos.make_move(m3);
+
+    // start_pos.printBoard();
+
+    cout << start_pos.is_valid(gen_attacked_squares(start_pos)) << endl;
+}
+
 
 int perft(int depth, Board position){
     vector<Move> moveList;
@@ -363,10 +399,11 @@ int perft(int depth, Board position){
     if(depth == 0)
         return 1;
     movegen(moveList, position, false); 
-    bitboard attacked_squares = gen_attacked_squares(position);
 
     for(Move m : moveList){
         position.make_move(m); 
+        bitboard attacked_squares = gen_attacked_squares(position);
+        
         if(position.is_valid(attacked_squares)){ 
             nodes += perft(depth - 1, Board(position));
         }
@@ -374,19 +411,7 @@ int perft(int depth, Board position){
     }
     return nodes;
 }
-
-int main(){
-    // test_gen_king_moves();
-    //test_gen_knight_moves();
-    //test_gen_pawn_moves();
-    //test_gen_rook_moves();
-    //test_gen_bishop_moves();
-    // test_gen_queen_moves();
-    // test_movegen();
-    // test_starting();
-
-    // test_gen_attacked_squares();
-
+void run_perft(){
     cout << endl << "PERFT" << endl;
     Board pos = Board("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1");
     auto start_time = std::chrono::high_resolution_clock::now();
@@ -396,5 +421,21 @@ int main(){
 
     auto time = end_time - start_time;
     cout << "Time taken: " << time/std::chrono::milliseconds(1) << "ms" << endl;
+}
 
+int main(){
+    // test_gen_king_moves();
+    // test_gen_knight_moves();
+    // test_gen_pawn_moves();
+    // test_gen_rook_moves();
+    // test_gen_bishop_moves();
+    // test_gen_queen_moves();
+    // test_movegen();
+    // test_starting();
+    // test_gen_attacked_squares();
+
+    // test_is_valid_check();
+    // test_is_valid();
+
+    run_perft();
 }

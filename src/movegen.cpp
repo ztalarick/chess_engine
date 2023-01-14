@@ -325,95 +325,101 @@ void gen_rook_moves(vector<Move> &moveList, const Board &pos, Piece p, bool incl
 
     // << 8
     bitboard old = sep_rooks[curr_rk];
-    curr_move = sep_rooks[curr_rk] << 8;
-    if(curr_move != 0){
-      for(int up = 0; up < 8; up++){
-        if(up != 0){
-          curr_move = curr_move << 8;
-        }
-        if(!no_ally_piece(ally_board, curr_move)){ //there is an allied piece
-          if(include_allied_squares){
-            moveList.push_back(Move(curr_move, old, p));
+    //if(!(old &) && !(old &))
+    if(!(old & 18374686479671623680ULL)){ // begin on the 8th rank
+      curr_move = sep_rooks[curr_rk] << 8;
+      if(curr_move != 0){
+        for(int up = 0; up < 8; up++){
+          if(up != 0){
+            curr_move = curr_move << 8;
           }
-          break; //stop sliding in this direction
-        }
-        //add the capture to the moveList
-        moveList.push_back(Move(curr_move, old, p));
+          if(!no_ally_piece(ally_board, curr_move)){ //there is an allied piece
+            if(include_allied_squares){
+              moveList.push_back(Move(curr_move, old, p));
+            }
+            break; //stop sliding in this direction
+          }
+          //add the capture to the moveList
+          moveList.push_back(Move(curr_move, old, p));
 
-        if(!no_ally_piece(opp_board, curr_move) //there is an opponent piece on the current move (we are capturing)
-        || (curr_move & 18374686479671623680ULL)){ //on the 8th rank
-          break; //stop sliding
+          if(!no_ally_piece(opp_board, curr_move) //there is an opponent piece on the current move (we are capturing)
+          || (curr_move & 18374686479671623680ULL)){ //on the 8th rank
+            break; //stop sliding
+          }
         }
       }
     }
-
     // >> 8
-    curr_move = sep_rooks[curr_rk] >> 8;
-    if(curr_move != 0){
-      for(int down = 0; down < 8; down++){
-        if(down != 0){
-        curr_move = curr_move >> 8;
-        }
-
-        if(!no_ally_piece(ally_board, curr_move)){ //there is an allied piece 
-          if(include_allied_squares){
-            moveList.push_back(Move(curr_move, old, p));
+    if(!(old & 255ULL)){  //begin on the first rank
+      curr_move = sep_rooks[curr_rk] >> 8;
+      if(curr_move != 0){
+        for(int down = 0; down < 8; down++){
+          if(down != 0){
+          curr_move = curr_move >> 8;
           }
-          break; //stop sliding in this direction
-        }
-        //add the capture to the moveList
-        moveList.push_back(Move(curr_move, old, p));
 
-        if(!no_ally_piece(opp_board, curr_move)  //there is an opponent piece
-        || (curr_move & 255ULL)){                 //on the first rank
-          break; //stop sliding
+          if(!no_ally_piece(ally_board, curr_move)){ //there is an allied piece 
+            if(include_allied_squares){
+              moveList.push_back(Move(curr_move, old, p));
+            }
+            break; //stop sliding in this direction
+          }
+          //add the capture to the moveList
+          moveList.push_back(Move(curr_move, old, p));
+
+          if(!no_ally_piece(opp_board, curr_move)  //there is an opponent piece
+          || (curr_move & 255ULL)){                 //on the first rank
+            break; //stop sliding
+          }
         }
       }
     }
-
 
     // >> 1
-    curr_move = sep_rooks[curr_rk] >> 1;
-    if(curr_move != 0){
-      for(int right = 0; right < 8; right++){
-        if(right != 0){
-        curr_move = curr_move >> 1;
-        }
-        if(!no_ally_piece(ally_board, curr_move)){ //there is an allied piece
-          if(include_allied_squares){
-            moveList.push_back(Move(curr_move, old, p));
+    if(!(old & 72340172838076673ULL)){
+      curr_move = sep_rooks[curr_rk] >> 1;
+      if(curr_move != 0){
+        for(int right = 0; right < 8; right++){
+          if(right != 0){
+          curr_move = curr_move >> 1;
           }
-          break; //stop sliding in this direction
-        }
-        //add the capture to the moveList
-        moveList.push_back(Move(curr_move, old, p));
+          if(!no_ally_piece(ally_board, curr_move)){ //there is an allied piece
+            if(include_allied_squares){
+              moveList.push_back(Move(curr_move, old, p));
+            }
+            break; //stop sliding in this direction
+          }
+          //add the capture to the moveList
+          moveList.push_back(Move(curr_move, old, p));
 
-        if(!no_ally_piece(opp_board, curr_move)
-        || (curr_move & 72340172838076673ULL)){ //there is an opponent piece
-          break; //stop sliding
+          if(!no_ally_piece(opp_board, curr_move)
+          || (curr_move & 72340172838076673ULL)){ //there is an opponent piece
+            break; //stop sliding
+          }
         }
       }
     }
-    
 
-    curr_move = sep_rooks[curr_rk] << 1;
-    if(curr_move != 0){
-      for(int left = 0; left < 8; left++){
-        if(left != 0){
-        curr_move = curr_move << 1;
-        }
-        if(!no_ally_piece(ally_board, curr_move)){ //there is an allied piece
-          if(include_allied_squares){
-            moveList.push_back(Move(curr_move, old, p));
+    if(!(old & 9259542123273814144ULL)){
+      curr_move = sep_rooks[curr_rk] << 1;
+      if(curr_move != 0){
+        for(int left = 0; left < 8; left++){
+          if(left != 0){
+          curr_move = curr_move << 1;
           }
-          break; //stop sliding in this direction
-        }
-        //add the capture to the moveList
-        moveList.push_back(Move(curr_move, old, p));
+          if(!no_ally_piece(ally_board, curr_move)){ //there is an allied piece
+            if(include_allied_squares){
+              moveList.push_back(Move(curr_move, old, p));
+            }
+            break; //stop sliding in this direction
+          }
+          //add the capture to the moveList
+          moveList.push_back(Move(curr_move, old, p));
 
-        if(!no_ally_piece(opp_board, curr_move)
-        || (curr_move & 9259542123273814144ULL)){ //there is an opponent piece
-          break; //stop sliding after capture
+          if(!no_ally_piece(opp_board, curr_move)
+          || (curr_move & 9259542123273814144ULL)){ //there is an opponent piece
+            break; //stop sliding after capture
+          }
         }
       }
     }
@@ -442,95 +448,100 @@ void gen_bishop_moves(vector<Move> &moveList, const Board &pos, Piece p, bool in
 
     // << 9 - NW
     bitboard old = sep_bishops[curr_bshp];
-    curr_move = sep_bishops[curr_bshp] << 9;
-    if(curr_move != 0){
-      for(int nw = 0; nw < 8; nw++){
-        if(nw != 0){
-          curr_move = curr_move << 9;
-        }
-        if(!no_ally_piece(ally_board, curr_move)){ //there is an allied piece
-          if(include_allied_squares){
-            moveList.push_back(Move(curr_move, old, p));
+    if(!(old & 18374686479671623680ULL) && !(old & 9259542123273814144ULL)){ //begins on //on the 8th rank or A file
+      curr_move = sep_bishops[curr_bshp] << 9;
+      if(curr_move != 0){
+        for(int nw = 0; nw < 8; nw++){
+          if(nw != 0){
+            curr_move = curr_move << 9;
           }
-          break; //stop sliding in this direction
-        }
-        //add the capture to the moveList
-        moveList.push_back(Move(curr_move, old, p));
-
-        if(!no_ally_piece(opp_board, curr_move) //there is an opponent piece
-        || (curr_move & 18374686479671623680ULL) || (curr_move & 9259542123273814144ULL)){ //on the 8th rank or A file
-          break; //stop sliding
+          if(!no_ally_piece(ally_board, curr_move)){ //there is an allied piece
+            if(include_allied_squares){
+              moveList.push_back(Move(curr_move, old, p));
+            }
+            break; //stop sliding in this direction
+          }
+          //add the capture to the moveList
+          moveList.push_back(Move(curr_move, old, p));
+          if(!no_ally_piece(opp_board, curr_move) //there is an opponent piece
+          || (curr_move & 18374686479671623680ULL) || (curr_move & 9259542123273814144ULL)){ //on the 8th rank or A file
+            break; //stop sliding
+          }
         }
       }
     }
-
     // >> 9 - SE
-    curr_move = sep_bishops[curr_bshp] >> 9;
-    if(curr_move != 0){
-      for(int se = 0; se < 8; se++){
-        if(se != 0){
-        curr_move = curr_move >> 9;
-        }
 
-        if(!no_ally_piece(ally_board, curr_move)){ //there is an allied piece 
-          if(include_allied_squares){
-            moveList.push_back(Move(curr_move, old, p));
+    if(!(old & 255ULL) && !(old & 72340172838076673ULL)){ //begins on the first rank or in H file
+      curr_move = sep_bishops[curr_bshp] >> 9;
+      if(curr_move != 0){
+        for(int se = 0; se < 8; se++){
+          if(se != 0){
+          curr_move = curr_move >> 9;
           }
-          break; //stop sliding in this direction
-        }
-        //add the capture to the moveList
-        moveList.push_back(Move(curr_move, old, p));
 
-        if(!no_ally_piece(opp_board, curr_move)  //there is an opponent piece
-        || (curr_move & 255ULL) || (curr_move & 72340172838076673ULL)){ //on the first rank or in H file
-          break; //stop sliding
+          if(!no_ally_piece(ally_board, curr_move)){ //there is an allied piece 
+            if(include_allied_squares){
+              moveList.push_back(Move(curr_move, old, p));
+            }
+            break; //stop sliding in this direction
+          }
+          //add the capture to the moveList
+          moveList.push_back(Move(curr_move, old, p));
+
+          if(!no_ally_piece(opp_board, curr_move)  //there is an opponent piece
+          || (curr_move & 255ULL) || (curr_move & 72340172838076673ULL)){ //on the first rank or in H file
+            break; //stop sliding
+          }
         }
       }
     }
-
 
     // >> 7 - SW
-    curr_move = sep_bishops[curr_bshp] >> 7;
-    if(curr_move != 0){
-      for(int sw = 0; sw < 8; sw++){
-        if(sw != 0){
-        curr_move = curr_move >> 7;
-        }
-        if(!no_ally_piece(ally_board, curr_move)){ //there is an allied piece
-          if(include_allied_squares){
-            moveList.push_back(Move(curr_move, old, p));
+    if(!(old & 9259542123273814144ULL) && !(old & 255ULL)){  // begins on the first rank or in A file
+      curr_move = sep_bishops[curr_bshp] >> 7;
+      if(curr_move != 0){
+        for(int sw = 0; sw < 8; sw++){
+          if(sw != 0){
+          curr_move = curr_move >> 7;
           }
-          break; //stop sliding in this direction
-        }
-        //add the capture to the moveList
-        moveList.push_back(Move(curr_move, old, p));
+          if(!no_ally_piece(ally_board, curr_move)){ //there is an allied piece
+            if(include_allied_squares){
+              moveList.push_back(Move(curr_move, old, p));
+            }
+            break; //stop sliding in this direction
+          }
+          //add the capture to the moveList
+          moveList.push_back(Move(curr_move, old, p));
 
-        if(!no_ally_piece(opp_board, curr_move) //there is an opponent piece
-        || (curr_move & 9259542123273814144ULL) || (curr_move & 255ULL)){  //on the first rank or in A file
-          break; //stop sliding
+          if(!no_ally_piece(opp_board, curr_move) //there is an opponent piece
+          || (curr_move & 9259542123273814144ULL) || (curr_move & 255ULL)){  //on the first rank or in A file
+            break; //stop sliding
+          }
         }
       }
     }
-    
     // << 7 - NE
-    curr_move = sep_bishops[curr_bshp] << 7;
-    if(curr_move != 0){
-      for(int ne = 0; ne < 8; ne++){
-        if(ne != 0){
-        curr_move = curr_move << 7;
-        }
-        if(!no_ally_piece(ally_board, curr_move)){ //there is an allied piece
-          if(include_allied_squares){
-            moveList.push_back(Move(curr_move, old, p));
+    if(!(old & 18374969058471772417ULL)){ // on the eigth rank or h file
+      curr_move = sep_bishops[curr_bshp] << 7;
+      if(curr_move != 0){
+        for(int ne = 0; ne < 8; ne++){
+          if(ne != 0){
+          curr_move = curr_move << 7;
           }
-          break; //stop sliding in this direction
-        }
-        //add the capture to the moveList
-        moveList.push_back(Move(curr_move, old, p));
+          if(!no_ally_piece(ally_board, curr_move)){ //there is an allied piece
+            if(include_allied_squares){
+              moveList.push_back(Move(curr_move, old, p));
+            }
+            break; //stop sliding in this direction
+          }
+          //add the capture to the moveList
+          moveList.push_back(Move(curr_move, old, p));
 
-        if(!no_ally_piece(opp_board, curr_move) //there is an opponent piece
-        || (curr_move & 18374969058471772417ULL)){ // on the eigth rank or h file
-          break; //stop sliding after capture
+          if(!no_ally_piece(opp_board, curr_move) //there is an opponent piece
+          || (curr_move & 18374969058471772417ULL)){ // on the eigth rank or h file
+            break; //stop sliding after capture
+          }
         }
       }
     }
@@ -571,9 +582,9 @@ void print_moveList2(vector<Move> &moveList){
     int num_moves = 0;
     cout << endl << "Move List: " << endl;
     for(Move m: moveList){
-        cout << endl;
+        cout << endl << "__________________ BEGIN __________________" << endl;
         m.print_move();
-        cout << endl;
+        cout << endl << "__________________ END __________________" << endl;
         num_moves++;
     }
     cout << "Number of moves generated: " << num_moves << endl << endl; 
@@ -620,7 +631,6 @@ bitboard gen_attacked_squares(Board pos){
   //build moveList from individual piece functions
   //we must also include the square attacking allied pieces are on
   movegen(moveList, pos, true);
-
   //iterate through moveList and combine attacked squares
   for(Move m : moveList){
     attacked_squares = attacked_squares | m.move;
