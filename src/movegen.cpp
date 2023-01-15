@@ -207,13 +207,13 @@ void gen_pawn_moves(vector<Move> &moveList, const Board &pos, Piece p){
 
           curr_move = sep_pawns.at(i) << 9; //left capture
           if(
-            (no_ally_piece(ally_board, curr_move) //there is no allied piece on the targeted square 
+            !(sep_pawns.at(i) & 9259542123273814144ULL) //not on the A file
+          &&
+            no_ally_piece(ally_board, curr_move) //there is no allied piece on the targeted square 
           && 
-          (!(no_ally_piece(opp_board, curr_move)))) //there is an opponent piece on the targeted square
+          (!(no_ally_piece(opp_board, curr_move)) //there is an opponent piece on the targeted square
           || 
-          (!(no_ally_piece(pos.en_passant, curr_move)) //there is an en passant available
-          && 
-          !(sep_pawns.at(i) & 9259542123273814144ULL))){ //not on the A file
+          !(no_ally_piece(pos.en_passant, curr_move)))){ //there is an en passant available 
 
             if(curr_move & 18374686479671623680ULL){ //promotion
               moveList.push_back(Move(curr_move, sep_pawns.at(i), p, wqueen));
@@ -227,10 +227,13 @@ void gen_pawn_moves(vector<Move> &moveList, const Board &pos, Piece p){
           } 
           //no piece allied or oponent, and it does not move to promotion square        
           curr_move = sep_pawns.at(i) << 7; //right capture
-          if((no_ally_piece(ally_board, curr_move)  
-          && (!(no_ally_piece(opp_board, curr_move))))
-          || ((!(no_ally_piece(pos.en_passant, curr_move))) 
-          && !(sep_pawns.at(i) & 72340172838076673ULL))){ //not on the H file
+          if(
+            !(sep_pawns.at(i) & 72340172838076673ULL)//not on the H file
+          &&
+            (no_ally_piece(ally_board, curr_move)  
+          && ((!(no_ally_piece(opp_board, curr_move))))
+          || !(no_ally_piece(pos.en_passant, curr_move))) 
+           ){ 
 
             if(curr_move & 18374686479671623680ULL){ //promotion
               moveList.push_back(Move(0, sep_pawns.at(i), p, wqueen));
@@ -267,10 +270,12 @@ void gen_pawn_moves(vector<Move> &moveList, const Board &pos, Piece p){
           }
 
           curr_move = sep_pawns.at(i) >> 9; //left capture
-          if((no_ally_piece(ally_board, curr_move) //there is no allied piece on the targeted square 
-          && (!(no_ally_piece(opp_board, curr_move))))//there is an opponent piece on the targeted square
-          || (!(no_ally_piece(pos.en_passant, curr_move)) //there is an en passant available
-          && !(sep_pawns.at(i) & 72340172838076673ULL))){ //not on the H file
+          if(
+            !(sep_pawns.at(i) & 72340172838076673ULL)//not on the H file
+          &&
+            no_ally_piece(ally_board, curr_move) //there is no allied piece on the targeted square 
+          && (!(no_ally_piece(opp_board, curr_move))//there is an opponent piece on the targeted square
+          || !(no_ally_piece(pos.en_passant, curr_move)))){ //there is an en passant available 
 
             if(curr_move & 255ULL){ //promotion
               moveList.push_back(Move(0, sep_pawns.at(i), p, bqueen));
@@ -281,14 +286,13 @@ void gen_pawn_moves(vector<Move> &moveList, const Board &pos, Piece p){
               moveList.push_back(Move(curr_move, sep_pawns.at(i), p));
             }
           } 
-          
-          
           //no piece allied or oponent, and it does not move to promotion square        
           curr_move = sep_pawns.at(i) >> 7; //right capture
-          if((no_ally_piece(ally_board, curr_move)  
-          && (!(no_ally_piece(opp_board, curr_move))))
-          || ((!(no_ally_piece(pos.en_passant, curr_move))) 
-          && !(sep_pawns.at(i) & 9259542123273814144ULL))){ //not on the A file
+          if(!(sep_pawns.at(i) & 9259542123273814144ULL) //not on the A file
+          &&
+          no_ally_piece(ally_board, curr_move)  
+          && (!(no_ally_piece(opp_board, curr_move))
+          || !(no_ally_piece(pos.en_passant, curr_move)))){
 
             if(curr_move & 255ULL){ //promotion
               moveList.push_back(Move(0, sep_pawns.at(i), p, bqueen));
