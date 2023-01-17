@@ -221,7 +221,7 @@ bool Board::is_valid(bitboard attacked_squares){
   //this is called right after the move is made.
   //if the king is not attacked -> return true
   
-  bitboard king = this->to_move ? boards[bking] : boards[wking];
+  bitboard king = this->to_move ? boards[wking] : boards[bking];
   return !(king & attacked_squares);
 }
 

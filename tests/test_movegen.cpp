@@ -262,6 +262,13 @@ void test_gen_rook_moves(){
     print_moveList(moveList);
 
     moveList.clear();
+
+    cout << "Test 7: edge case" << endl;
+    Board edge_case = Board("8/8/8/8/8/8/6PP/5P1R w - - 0 1");
+    gen_rook_moves(moveList, edge_case, wrook, false);
+    print_moveList(moveList);
+
+    moveList.clear();
 }
 
 void test_gen_bishop_moves(){
@@ -365,15 +372,15 @@ void test_is_valid_check(){
     Board start_pos = Board("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1");
     Move m = Move(134217728ULL, 2048ULL, wpawn); // 1. e4
     Move m2 = Move(1125899906842624ULL, 17179869184ULL, bpawn); // 1. e4 f5
-    Move m3 = Move(16, 4294967296UL, wqueen);
+    Move m3 = Move(16, 4294967296UL, wqueen); // 2. Qh5
 
     start_pos.make_move(m);
     start_pos.make_move(m2);
     start_pos.make_move(m3);
 
-    // start_pos.printBoard();
+    start_pos.printBoard();
 
-    cout << "Result: " << start_pos.is_valid(gen_attacked_squares(start_pos)) << endl;
+    cout << endl << "Result: " << start_pos.is_valid(gen_attacked_squares(start_pos)) << endl;
 }
 
 void test_is_valid(){
@@ -389,6 +396,38 @@ void test_is_valid(){
     // start_pos.printBoard();
 
     cout << start_pos.is_valid(gen_attacked_squares(start_pos)) << endl;
+}
+
+void test_check_movegen(){
+    Board start_pos = Board("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1");
+    Move m1 = Move(134217728ULL, 2048ULL, wpawn); // 1. e4
+    Move m2 = Move(1125899906842624ULL, 17179869184ULL, bpawn); // 1. e4 f5
+    Move m3 = Move(16, 4294967296UL, wqueen); // 2. Qh5
+
+    start_pos.make_move(m1);
+    start_pos.make_move(m2);
+    start_pos.make_move(m3);
+
+    // start_pos.printBoard();
+
+    vector<Move> moveList;
+    movegen(moveList, start_pos, false); 
+    for(Move m : moveList){
+        start_pos.make_move(m);
+        bitboard attacked_squares = gen_attacked_squares(start_pos);
+        // cout << "attacked_squares: " << endl;
+        // printBitboard(attacked_squares);
+        cout << endl << "valid: " << start_pos.is_valid(attacked_squares) << endl;
+        if(start_pos.is_valid(attacked_squares)){
+            cout << "_____________________ BEGIN _________________________" << endl;
+            m.print_move();
+            cout << "______________________ END ________________________" << endl;
+        }else {
+            cout << "not valid" << endl;
+        }
+        start_pos.undo_move();
+    }   
+
 }
 
 
@@ -433,7 +472,7 @@ int main(){
     // test_movegen();
     // test_starting();
     // test_gen_attacked_squares();
-
+    // test_check_movegen();
     // test_is_valid_check();
     // test_is_valid();
 

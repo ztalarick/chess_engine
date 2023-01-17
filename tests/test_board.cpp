@@ -2,7 +2,7 @@
 /*
   Author: Zachary Talarick
   Date: 05/24/21
-  Implements the friend test method declared in board.h
+  file for testing methods for board.h
 */
 #include <iostream>
 #include <string>
@@ -112,7 +112,7 @@ void test_undo_move(){
   Board start_pos = Board("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1");
 
   Move m = Move(134217728ULL, 2048ULL, wpawn); // 1. e4
-  Move m2 = Move(34359738368UL, 2251799813685248ULL, bpawn); // 1. e4 e5
+  Move m2 = Move(34359738368ULL, 2251799813685248ULL, bpawn); // 1. e4 e5
 
   // cout << (start_pos.to_move ? "black" : "white") << endl;
   cout << "____________________ BEGIN _______________________________" << endl;
@@ -133,8 +133,27 @@ void test_undo_move(){
 
 }
 
+void test_capture(){
+    Board start_pos = Board("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1");
+
+    Move m1 = Move(134217728ULL, 2048ULL, wpawn);                   // 1. e4
+    Move m2 = Move(68719476736ULL, 4503599627370496ULL, bpawn);     // 1. e4 d5
+    Move m3 = Move(68719476736ULL, 134217728ULL, wpawn);            // 2. exd5 
+    Move m4 = Move(68719476736ULL, 1152921504606846976ULL, bqueen); // 2. exd5 Qd5
+
+    start_pos.make_move(m1);
+    start_pos.make_move(m2);
+    start_pos.make_move(m3);
+    start_pos.undo_move();
+    start_pos.make_move(m3);
+    start_pos.make_move(m4);
+
+    start_pos.printBoard();
+
+}
 
 int main(){
   //test();
-  test_undo_move();
+  // test_undo_move();
+  test_capture();
 }

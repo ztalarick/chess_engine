@@ -597,7 +597,7 @@ void print_moveList2(vector<Move> &moveList){
 
 bitboard gen_attacked_squares(Board pos){
   //get opposite side 
-  Side s = pos.to_move ? white : black;
+  Side s = pos.to_move ? black : white;
   bitboard attacked_squares = 0;
   vector<Move> moveList;
 
