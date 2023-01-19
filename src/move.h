@@ -21,10 +21,14 @@ class Move{
     //Flag to indicate that this move would 
     bitboard en_passant;
 
+    //indicates the type of castle or none
+    Castle castle_type;
+
     //constructors
     Move(bitboard move, bitboard prev, Piece p, bitboard en_passant);
     Move(bitboard move, bitboard prev, Piece p, Piece promote);
     Move(bitboard move, bitboard prev, Piece p);
+    Move(Castle castle_type);
     Move() = default;
 
     void print_move();

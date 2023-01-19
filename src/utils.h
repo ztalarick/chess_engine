@@ -11,6 +11,12 @@ enum Piece {wking, wqueen, wknight, wbishop, wrook, wpawn,
 
 enum Side {white, black};
 
+enum Castle {wk, wq, bk, bq, not_castle};
+
+const std::string CastleTypes[] = {"white kingside castle", "white queenside castle", "black kingside castle", "black queenside castle", "no castle"};
+const std::string PieceTypes[] = {"wking", "wqueen", "wknight", "wbishop", "wrook", "wpawn",
+   "bking", "bqueen", "bknight", "bbishop", "brook", "bpawn", "none"};
+const std::string SideTypes[] = {"white", "black"};
 //prints a bitboard
 void printBitboard(bitboard b);
 

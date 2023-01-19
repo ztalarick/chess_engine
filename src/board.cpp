@@ -51,6 +51,7 @@ Board::Board(const Board *src){
   en_passant = src->en_passant;
   half_clock = src->half_clock;
   full_count = src->full_count;
+  move = src->move;
   game = src->game;
 }
 
@@ -67,6 +68,7 @@ Board::Board(const Board &src, Move m){
   en_passant = src.en_passant;
   half_clock = src.half_clock;
   full_count = src.full_count;
+  move = m;
   game = src.game;
 
   this->make_move(m);
@@ -135,7 +137,7 @@ Board::Board(string fen){
 
   half_clock = stoi(fen_parts[4]);
   full_count = stoi(fen_parts[5]);
-
+  move = Move();
   //generate white_pieces and black_pieces
   white_pieces = 0;
   black_pieces = 0;
@@ -153,7 +155,24 @@ void Board::make_move(Move m){
   Board* prev = new Board(this);
   //add to stack
   game.push(prev);
-  boards[m.p] = (m.move | m.prev) ^ boards[m.p];
+  move = m;
+  //castling
+  if(m.castle_type == wk){ //white kingside
+    boards[wking] = 2;
+    boards[wrook] = boards[wrook] ^ 5ULL;
+  }else if(m.castle_type == wq) { //white queenside
+    boards[wking] = 32;
+    boards[wrook] = boards[wrook] ^ 144ULL;
+  }else if (m.castle_type == bk){ //black kingside
+    boards[bking] = 144115188075855872ULL;
+    boards[brook] = boards[brook] ^ 360287970189639680ULL;
+  }else if (m.castle_type == bq){ //black queenside
+    boards[bking] = 2305843009213693952ULL;
+    boards[brook] = boards[brook] ^ 10376293541461622784ULL;
+  }else { //all other moves
+    boards[m.p] = (m.move | m.prev) ^ boards[m.p]; // not castle
+  }
+
 
   //handling promotion
   if((m.p == wpawn && m.move & 18374686479671623680ULL) || (m.p == bpawn && m.move & 255ULL)){
@@ -205,6 +224,27 @@ void Board::make_move(Move m){
       black_pieces = boards[i] | black_pieces;
     }
   }
+  
+  // handle castle flags
+  if(m.p == wking){ // if white king moved
+    this->wk_castle = false;
+    this->wq_castle = false;
+  }else if(m.p == wrook){ 
+    if(!(this->boards[wrook] & 1)) //if white kingside rook moved
+      this->wk_castle = false;
+    
+    if(!(this->boards[wrook] & 128)) //if white queenside rook moved
+      this->wq_castle = false;
+  }else if(m.p == bking){ // if black king moved
+    this->bk_castle = false;
+    this->bq_castle = false;
+  }else if(m.p == brook){
+    if(!(this->boards[brook] & 9223372036854775808ULL)) //if black queenside rook moved
+      this->bq_castle = false;
+    
+    if(!(this->boards[brook] & 72057594037927936ULL)) //if black kingside rook moved
+      this->bk_castle = false;
+  }
 }
 
 
@@ -220,7 +260,15 @@ bool Board::is_valid(bitboard attacked_squares){
   //attacked_squares is white attacks if to_move is white and vice versa
   //this is called right after the move is made.
   //if the king is not attacked -> return true
-  
+  if(this->move.castle_type == wq)
+    return !(56 & attacked_squares);
+  if(this->move.castle_type == wk)
+    return !(14 & attacked_squares);
+  if(this->move.castle_type == bk)
+    return !(1008806316530991104ULL & attacked_squares);
+  if(this->move.castle_type == bk)
+    return !(4035225266123964416ULL & attacked_squares);
+    
   bitboard king = this->to_move ? boards[wking] : boards[bking];
   return !(king & attacked_squares);
 }

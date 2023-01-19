@@ -32,12 +32,10 @@ void print_moveList(vector<Move> &moveList){
     cout << "Number of moves generated: " << num_moves << endl << endl; 
 }
 
-void print_black_white_pieces(vector<Move> &moveList){
-    int num_moves = 0;
-    for(Move m: moveList){
-        //todo
-    }
-    cout << "Number of moves generated: " << num_moves << endl << endl; 
+void print_black_white_pieces(Board b){
+  cout << "White and Black Pieces: " << (b.white_pieces | b.black_pieces) << endl;
+  printBitboard((b.white_pieces | b.black_pieces));
+  cout << endl;
 }
 
 void test_gen_king_moves(){
@@ -362,7 +360,6 @@ void test_movegen(){
     Board starting_white_pos = Board("rnbqkbnr/pppp1ppp/8/4p3/3P4/8/PPP1PPPP/RKBQKBNR w KQkq - 0 1");
     movegen(moveList, starting_white_pos, true);  
     // print_moveList(moveList);
-    print_black_white_pieces(moveList);
     cout << moveList.size() << endl;
 
     moveList.clear();
@@ -437,12 +434,11 @@ int perft(int depth, Board position){
 
     if(depth == 0)
         return 1;
-    movegen(moveList, position, false); 
+    movegen(moveList, position, false);
 
     for(Move m : moveList){
         position.make_move(m); 
         bitboard attacked_squares = gen_attacked_squares(position);
-        
         if(position.is_valid(attacked_squares)){ 
             nodes += perft(depth - 1, Board(position));
         }
@@ -450,11 +446,12 @@ int perft(int depth, Board position){
     }
     return nodes;
 }
-void run_perft(){
+void run_perft(string fen){
     cout << endl << "PERFT" << endl;
-    Board pos = Board("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1");
+    Board pos = Board(fen);
+
     auto start_time = std::chrono::high_resolution_clock::now();
-    int count = perft(3, pos);
+    int count = perft(2, pos);
     auto end_time = std::chrono::high_resolution_clock::now();
     cout << "Nodes: " << count << endl;    
 
@@ -476,5 +473,7 @@ int main(){
     // test_is_valid_check();
     // test_is_valid();
 
-    run_perft();
+    //STARTING POSITION -> rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1
+    //TEST POSITION -> "r3k2r/p1ppqpb1/bn2pnp1/3PN3/1p2P3/2N2Q1p/PPPBBPPP/R3K2R w KQkq - 0 1"
+    run_perft("r3k2r/p1ppqpb1/bn2pnp1/3PN3/1p2P3/2N2Q1p/PPPBBPPP/R3K2R w KQkq - 0 1");
 }

@@ -36,6 +36,8 @@ class Board{
 
     //LIFO stack to track all moves made
     std::stack<Board*> game;
+    //The move to get to the current position
+    Move move;
 
     //contructors
     //contruct a copy of the current board

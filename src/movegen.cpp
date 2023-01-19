@@ -84,7 +84,20 @@ void gen_king_moves(vector<Move> &moveList, const Board &pos, Piece p, bool incl
       !(pos.boards[p] & 72340172838076927ULL)) //not in h file or 1st rank
         moveList.push_back(Move(pos.boards[p] >> 9, pos.boards[p], p)); //move 1 se
       
-      //TODO: add castle
+      //castle
+      bitboard all_pieces = pos.white_pieces | pos.black_pieces;
+      if(pos.to_move == 0 && pos.wk_castle && no_ally_piece(all_pieces, 6)){ //white kingside castle
+        moveList.push_back(Move(wk));
+      } 
+      if(pos.to_move == 0 && pos.wq_castle && no_ally_piece(all_pieces, 112)){ //white queenside castle
+        moveList.push_back(Move(wq));
+      }
+      if(pos.to_move == 1 && pos.bk_castle && no_ally_piece(all_pieces, 432345564227567616ULL)){ //black kingside castle 
+        moveList.push_back(Move(bk));
+      } 
+      if(pos.to_move == 1 && pos.bq_castle && no_ally_piece(all_pieces, 8070450532247928832ULL)){ //black queenside castle
+        moveList.push_back(Move(bq));
+      }
 }
 
 //function to generate and add all legal knight moves to the moveList
@@ -200,8 +213,7 @@ void gen_pawn_moves(vector<Move> &moveList, const Board &pos, Piece p){
           }
             
           curr_move = sep_pawns.at(i) << 16; //double move
-          if((sep_pawns.at(i) & 65280ULL) && no_ally_piece(ally_board, curr_move) //check on 2nd rank
-          && no_ally_piece(opp_board, curr_move)){
+          if((sep_pawns.at(i) & 65280ULL) && no_ally_piece(ally_board | opp_board, curr_move | (curr_move >> 8))){ //check on 2nd rank
             moveList.push_back(Move(curr_move, sep_pawns.at(i), p, curr_move >> 8));
           }
 
@@ -264,8 +276,7 @@ void gen_pawn_moves(vector<Move> &moveList, const Board &pos, Piece p){
           }
             
           curr_move = sep_pawns.at(i) >> 16; //double move
-          if((sep_pawns.at(i) & 71776119061217280ULL) && no_ally_piece(ally_board, curr_move) //check on 2nd rank
-          && no_ally_piece(opp_board, curr_move)){
+          if((sep_pawns.at(i) & 71776119061217280ULL) && no_ally_piece(ally_board | opp_board, curr_move | (curr_move << 8))){ //check on 2nd rank
             moveList.push_back(Move(curr_move, sep_pawns.at(i), p, curr_move << 8));
           }
 

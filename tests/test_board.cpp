@@ -152,8 +152,41 @@ void test_capture(){
 
 }
 
+void test_castle(){
+  Board pos = Board("r3k2r/pppppppp/8/8/8/8/PPPPPPPP/R3K2R w KQkq - 0 1");
+
+  Move castle_kingside_white = Move(wk);
+  Move castle_queenside_white = Move(wq);
+
+  Move castle_kingside_black = Move(bk);
+  Move castle_queenside_black = Move(bq);
+
+  Move wkm = Move(16, 8, wking);
+  Move bkm = Move(1152921504606846976ULL, 576460752303423488ULL, bking);
+
+  Move wqrm = Move(64, 128, wrook);
+  Move bqrm = Move(4611686018427387904ULL, 9223372036854775808ULL, brook);
+
+  Move wkrm = Move(2, 1, wrook);
+  Move bkrm = Move(144115188075855872ULL, 72057594037927936ULL, brook);
+
+  pos.printBoard();
+
+  cout << endl << "_____________________________________________" << endl;
+
+  pos.make_move(wkrm);
+  pos.make_move(bkrm);
+
+  pos.make_move(castle_queenside_white);
+  pos.make_move(castle_queenside_black);
+
+  pos.printBoard();
+
+}
+
 int main(){
   //test();
   // test_undo_move();
-  test_capture();
+  // test_capture();
+  test_castle();
 }
